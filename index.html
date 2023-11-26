@@ -71,6 +71,8 @@
         "esri/layers/GraphicsLayer",
         "esri/Graphic",
         "esri/request",
+        "esri/geometry/Point",
+        "esri/geometry/Mesh",
       ], function (
         Map,
         SceneView,
@@ -78,7 +80,9 @@
         SceneLayer,
         GraphicsLayer,
         Graphic,
-        esriRequest
+        esriRequest,
+        Point,
+        Mesh
       ) {
         // Hiển thị mô hình chữ T của Dinh Độc Lập
         const DDL_T = new GeoJSONLayer({
@@ -138,6 +142,81 @@
 
         //Hiển thị thông tin chi tiết của Dinh Độc Lập
         view.popup.defaultPopupTemplateEnabled = true;
+
+         fetch('./GeoJSON/Tree_corr.json')
+                .then((response) => response.json())
+                .then((json)=>
+                {
+
+                    for (var corr in json)
+                    {
+                        const tree_loc = new Point({
+                            x:json[corr][0],
+                            y: json[corr][1],
+                            z: 15
+
+
+                        });
+
+
+                    Mesh.createFromGLTF(tree_loc, "./Model/Tree/Tree.glb") //Thêm tượng demo
+                        .then(function (geometry) {
+                    // increase it a factor of 3
+                    geometry.scale(5, { origin: tree_loc });
+                    // rotate it by 90 degrees around the z axis
+                    geometry.rotate(0, 0, 114);
+                    // add it to a graphic
+                    const graphic = new Graphic({
+                        geometry,
+                        symbol: {
+                            type: "mesh-3d", // autocasts as new MeshSymbol3D()
+                            symbolLayers: [{
+                                type: "fill", // autocasts as new FillSymbol3DLayer()
+                                material: {
+                                    //color: "gray"
+                                },
+                                size: 1000
+                            }]
+                        }
+                    });
+
+                    view.graphics.add(graphic)
+                })
+                .catch(console.error);
+                    }
+                })
+
+
+            const fountain_loc = new Point({
+                            x:106.69596145527656,
+                            y: 10.777612314732947,
+                            z:16
+                        });
+
+            Mesh.createFromGLTF(fountain_loc, "./Model/Fountain/Fountain.gltf") //Thêm tượng demo
+                        .then(function (geometry) {
+                    // increase it a factor of 3
+                    geometry.scale(0.5, { origin: fountain_loc });
+                    // rotate it by 90 degrees around the z axis
+                    geometry.rotate(0, 0, 114);
+                    // add it to a graphic
+                    const graphic = new Graphic({
+                        geometry,
+                        symbol: {
+                            type: "mesh-3d", // autocasts as new MeshSymbol3D()
+                            symbolLayers: [{
+                                type: "fill", // autocasts as new FillSymbol3DLayer()
+                                material: {
+                                    //color: "gray"
+                                },
+                                size: 1000
+                            }]
+                        }
+                    });
+
+                    view.graphics.add(graphic)
+                })
+                .catch(console.error);
 
         //Click copy các tọa độ
         // view.popup.autoOpenEnabled = false; // Disable the default popup behavior
