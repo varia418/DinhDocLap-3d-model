@@ -1,55 +1,169 @@
 <html>
-
-<head>
+  <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
 
-    <title>Dinh Doc Lap</title>
-
-    <link rel="stylesheet" href="https://js.arcgis.com/4.15/esri/themes/light/main.css" />
-    <script src="https://js.arcgis.com/4.15/"></script>
-
+    <title>Dinh Độc Lập</title>
     <style>
-        html,
-        body,
-        #viewDiv {
-            padding: 0;
-            margin: 0;
-            height: 100%;
-            width: 100%;
-        }
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+
+      /* Style mô hình Dinh Độc Lập */
+      #back {
+        position: absolute;
+        bottom: 20px;
+      }
+
+      #back i {
+        background-image: url(app/public/img/back.svg);
+        background-repeat: no-repeat;
+        display: inline-block;
+        width: 100px;
+        height: 25px;
+        padding-left: 25px;
+        padding-top: 2px;
+        margin: 10px;
+        cursor: pointer;
+        background-size: 20px;
+      }
     </style>
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.28/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.28/"></script>
+
     <script>
-        require([
-            "esri/Map",
-            "esri/views/SceneView"
-        ], function (
-            Map,
-            SceneView
-        ) {
+      // Khai báo biến click copy lấy tọa độ
+      var map;
+      var list_points = [];
+      var string_points = "";
 
-            const map = new Map({
-                basemap: "topo-vector",
-                ground: "world-elevation"
-            });
-
-            const view = new SceneView({
-                container: "viewDiv",
-                map: map,
-                camera: {
-                    position: [106.696851, 10.783157, 400],
-                    heading: 910,
-                    tilt: 60,
+      // hàm click lấy copy tọa độ
+      function copyTextToClipboard(text) {
+        if (!navigator.clipboard) {
+          fallbackCopyTextToClipboard(text);
+          return;
+        }
+        navigator.clipboard.writeText(text).then(
+          function () {
+            console.log("Async: Copying to clipboard was successful!");
+          },
+          function (err) {
+            console.error("Async: Could not copy text: ", err);
+          }
+        );
+      }
+      require([
+        "esri/Map",
+        "esri/views/SceneView",
+        "esri/layers/GeoJSONLayer",
+        "esri/layers/SceneLayer",
+        "esri/layers/GraphicsLayer",
+        "esri/Graphic",
+        "esri/request",
+      ], function (
+        Map,
+        SceneView,
+        GeoJSONLayer,
+        SceneLayer,
+        GraphicsLayer,
+        Graphic,
+        esriRequest
+      ) {
+        // Hiển thị mô hình chữ T của Dinh Độc Lập
+        const DDL_T = new GeoJSONLayer({
+          url: "./GeoJSON/DDL_T.geojson",
+          renderer: {
+            type: "simple",
+            symbol: {
+              type: "polygon-3d",
+              symbolLayers: [
+                {
+                  type: "extrude",
+                  size: 30,
+                  material: {
+                    color: "#caf0f8",
+                  },
                 },
-                zoom: 100
-            });
-
+              ],
+            },
+          },
         });
+
+        // Hiển thị mô hình chữ O của Dinh Độc Lập
+        const DDL_O = new GeoJSONLayer({
+          url: "./GeoJSON/DDL_O.geojson",
+          renderer: {
+            type: "simple",
+            symbol: {
+              type: "polygon-3d",
+              symbolLayers: [
+                {
+                  type: "extrude",
+                  size: 30,
+                  material: {
+                    color: "#caf0f8",
+                  },
+                },
+              ],
+            },
+          },
+        });
+        const map = new Map({
+          basemap: "topo-vector",
+          ground: "world-elevation",
+          layers: [DDL_T, DDL_O],
+        });
+
+        const view = new SceneView({
+          container: "viewDiv",
+          map: map,
+          camera: {
+            position: [106.696851, 10.783157, 400],
+            heading: 910,
+            tilt: 60,
+          },
+          zoom: 100,
+        });
+        view.popup.defaultPopupTemplateEnabled = true;
+
+        //Click copy các tọa độ
+        view.popup.autoOpenEnabled = false; // Disable the default popup behavior
+        view.on("click", function (event) {
+          // Listen for the click event
+          view.hitTest(event).then(function (hitTestResults) {
+            // Search for features where the user clicked
+            if (hitTestResults.results) {
+              list_points.push([
+                event.mapPoint.longitude,
+                event.mapPoint.latitude,
+              ]);
+              string_points +=
+                "[" +
+                event.mapPoint.longitude +
+                ", " +
+                event.mapPoint.latitude +
+                "],";
+              copyTextToClipboard(string_points);
+              // console.log(list_points);
+            }
+          });
+        });
+      });
     </script>
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="viewDiv"></div>
-</body>
-
+  </body>
 </html>
