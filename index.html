@@ -135,10 +135,12 @@
           },
           zoom: 100,
         });
+
+        //Hiển thị thông tin chi tiết của Dinh Độc Lập
         view.popup.defaultPopupTemplateEnabled = true;
 
         //Click copy các tọa độ
-        view.popup.autoOpenEnabled = false; // Disable the default popup behavior
+        // view.popup.autoOpenEnabled = false; // Disable the default popup behavior
         view.on("click", function (event) {
           // Listen for the click event
           view.hitTest(event).then(function (hitTestResults) {
