@@ -8,7 +8,9 @@
       "type": "Feature",
       "properties": {
         "Building name": "Dinh Độc Lập",
-        "Height": "26 m"
+        "Height": "26 m",
+        "Area": "4500 m^2",
+        "Floor": "3 floors"
       },
       "geometry": {
         "type": "Polygon",
