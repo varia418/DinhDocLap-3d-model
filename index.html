@@ -6,8 +6,11 @@
 
     <title>Dinh Doc Lap</title>
 
-    <link rel="stylesheet" href="https://js.arcgis.com/4.15/esri/themes/light/main.css" />
-    <script src="https://js.arcgis.com/4.15/"></script>
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.28/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.28/"></script>
 
     <style>
         html,
@@ -18,19 +21,259 @@
             height: 100%;
             width: 100%;
         }
+
+        /* Style mô hình Dinh Độc Lập */
+        #back {
+            position: absolute;
+            bottom: 20px;
+        }
+
+        #back i {
+            background-image: url(app/public/img/back.svg);
+            background-repeat: no-repeat;
+            display: inline-block;
+            width: 100px;
+            height: 25px;
+            padding-left: 25px;
+            padding-top: 2px;
+            margin: 10px;
+            cursor: pointer;
+            background-size: 20px;
+        }
     </style>
     <script>
         require([
-            "esri/Map",
-            "esri/views/SceneView"
-        ], function (
-            Map,
-            SceneView
+        "esri/Map",
+        "esri/views/SceneView",
+        "esri/layers/GeoJSONLayer",
+        "esri/layers/SceneLayer",
+        "esri/layers/GraphicsLayer",
+        "esri/Graphic",
+        "esri/request",
+      ], function (
+        Map,
+        SceneView,
+        GeoJSONLayer,
+        SceneLayer,
+        GraphicsLayer,
+        Graphic,
+        esriRequest
         ) {
+//==========================================
+            //Base roof
+            const DDL_T_Roof_Base = new GeoJSONLayer({
+                url: "./GeoJSON/DDL_T_Roof_Base.geojson", 
+                renderer: {
+                    type: "simple",
+                    symbol: {
+                    type: "polygon-3d",
+                    symbolLayers: [
+                        {
+                        type: "extrude",
+                        size: 1,
+                        material: {
+                            color: "#FF0000",
+                        },
+                        },
+                    ],
+                    },
+                },
+            });
 
+             //Main Room
+            const DDL_T_Roof_MainRoom = new GeoJSONLayer({
+                url: "./GeoJSON/DDL_T_Roof_MainRoom.geojson",
+                renderer: {
+                    type: "simple",
+                    symbol: {
+                    type: "polygon-3d",
+                    symbolLayers: [
+                        {
+                        type: "extrude",
+                        size: 5,
+                        material: {
+                            color: "#F00000",
+                        },
+                        },
+                    ],
+                    },
+                },
+            });
+
+             //Main Room's Roof
+             const DDL_T_Roof_MainRoom_Roof = new GeoJSONLayer({
+                url: "./GeoJSON/DDL_T_Roof_MainRoom_Roof.geojson",
+                renderer: {
+                    type: "simple",
+                    symbol: {
+                    type: "polygon-3d",
+                    symbolLayers: [
+                        {
+                        type: "extrude",
+                        size: 0.6,
+                        material: {
+                            color: "#F00000",
+                        },
+                        },
+                    ],
+                    },
+                },
+            });
+
+            //Side Rooms
+            const DDL_T_Roof_SideRooms = new GeoJSONLayer({
+                url: "./GeoJSON/DDL_T_Roof_SideRooms.geojson",
+                renderer: {
+                    type: "simple",
+                    symbol: {
+                    type: "polygon-3d",
+                    symbolLayers: [
+                        {
+                        type: "extrude",
+                        size: 5,
+                        material: {
+                            color: "#F00000",
+                        },
+                        },
+                    ],
+                    },
+                },
+            });
+
+            //Side Room's Roofs
+            const DDL_T_Roof_SideRooms_Roofs = new GeoJSONLayer({
+                url: "./GeoJSON/DDL_T_Roof_SideRooms_Roof.geojson",
+                renderer: {
+                    type: "simple",
+                    symbol: {
+                    type: "polygon-3d",
+                    symbolLayers: [
+                        {
+                        type: "extrude",
+                        size: 0.6,
+                        material: {
+                            color: "#F00000",
+                        },
+                        },
+                    ],
+                    },
+                },
+            });
+
+            //Roof Banister
+            const DDL_T_Roof_Banister = new GeoJSONLayer({
+                url: "./GeoJSON/DDL_T_Roof_Banister.geojson", 
+                renderer: {
+                    type: "simple",
+                    symbol: {
+                        type: "line-3d",
+                        symbolLayers: [
+                            {
+                                type: "line",
+                                size: 1,
+                                material: {
+                                    color: "#0000FF",
+                                }                           
+                            },
+                        ],
+                    },
+                },
+            });
+
+             //Side Rooms in O shape
+             const DDL_0_Roof_SideRooms = new GeoJSONLayer({
+                url: "./GeoJSON/DDL_O_Roof_SideRooms.geojson",
+                renderer: {
+                    type: "simple",
+                    symbol: {
+                    type: "polygon-3d",
+                    symbolLayers: [
+                        {
+                        type: "extrude",
+                        size: 3,
+                        material: {
+                            color: "#F00000",
+                        },
+                        },
+                    ],
+                    },
+                },
+            });
+
+            //Side Rooms in O shape Roof
+            const DDL_0_Roof_SideRooms_Roof = new GeoJSONLayer({
+                url: "./GeoJSON/DDL_O_Roof_SideRooms_Roof.geojson",
+                renderer: {
+                    type: "simple",
+                    symbol: {
+                    type: "polygon-3d",
+                    symbolLayers: [
+                        {
+                        type: "extrude",
+                        size: 0.3,
+                        material: {
+                            color: "#F00000",
+                        },
+                        },
+                    ],
+                    },
+                },
+            });
+
+             //Flag
+             const DDL_T_Roof_Flag = new GeoJSONLayer({
+                url: "./GeoJSON/DDL_T_Roof_Flag.geojson", 
+                renderer: {
+                    type: "simple",
+                    symbol: {
+                        type: "point-3d",
+                        symbolLayers: [
+                            {
+                                type: "object",
+                                width: 0.5,
+                                height: 20,
+                                resource: {
+                                    primitive: "cone"
+                                },
+                                material: {
+                                    color: "#FF0000"
+                                },
+                            },
+                            {
+                                type: "object",
+                                width: 5,
+                                height: 2, 
+                                depth: 0.1,
+                                resource: {
+                                    primitive: "cylinder"
+                                },
+                                material: {
+                                    color: "#FF0000"
+                                },
+                                anchor: "relative",
+                                anchorPosition: { x: 0.5, y: 0, z: -9 },
+                            },
+                        ],
+                    },
+                },
+            });
+
+
+//===========================================
             const map = new Map({
                 basemap: "topo-vector",
-                ground: "world-elevation"
+                ground: "world-elevation",
+                layers: [
+                    DDL_T_Roof_Base, 
+                    DDL_T_Roof_Banister, 
+                    DDL_T_Roof_MainRoom,
+                    DDL_T_Roof_SideRooms,
+                    DDL_T_Roof_SideRooms_Roofs,
+                    DDL_T_Roof_MainRoom_Roof,
+                    DDL_0_Roof_SideRooms,
+                    DDL_0_Roof_SideRooms_Roof,
+                    DDL_T_Roof_Flag
+                ]
             });
 
             const view = new SceneView({
@@ -44,6 +287,10 @@
                 zoom: 100
             });
 
+
+            //===============
+            view.popup.defaultPopupTemplateEnabled = true;
+            //==============
         });
     </script>
 </head>
