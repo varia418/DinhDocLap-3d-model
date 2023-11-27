@@ -1,171 +1,349 @@
 <html>
-  <head>
+
+<head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="initial-scale=1,maximum-scale=1,user-scalable=no"
-    />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
 
     <title>Dinh Độc Lập</title>
     <style>
-      html,
-      body,
-      #viewDiv {
-        padding: 0;
-        margin: 0;
-        height: 100%;
-        width: 100%;
-      }
+        html,
+        body,
+        #viewDiv {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
 
-      /* Style mô hình Dinh Độc Lập */
-      #back {
-        position: absolute;
-        bottom: 20px;
-      }
+        /* Style mô hình Dinh Độc Lập */
+        #back {
+            position: absolute;
+            bottom: 20px;
+        }
 
-      #back i {
-        background-image: url(app/public/img/back.svg);
-        background-repeat: no-repeat;
-        display: inline-block;
-        width: 100px;
-        height: 25px;
-        padding-left: 25px;
-        padding-top: 2px;
-        margin: 10px;
-        cursor: pointer;
-        background-size: 20px;
-      }
+        #back i {
+            background-image: url(app/public/img/back.svg);
+            background-repeat: no-repeat;
+            display: inline-block;
+            width: 100px;
+            height: 25px;
+            padding-left: 25px;
+            padding-top: 2px;
+            margin: 10px;
+            cursor: pointer;
+            background-size: 20px;
+        }
     </style>
-    <link
-      rel="stylesheet"
-      href="https://js.arcgis.com/4.28/esri/themes/light/main.css"
-    />
+    <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css" />
     <script src="https://js.arcgis.com/4.28/"></script>
 
     <script>
-      // Khai báo biến click copy lấy tọa độ
-      var map;
-      var list_points = [];
-      var string_points = "";
+        // Khai báo biến click copy lấy tọa độ
+        var map;
+        var list_points = [];
+        var string_points = "";
 
-      // hàm click lấy copy tọa độ
-      function copyTextToClipboard(text) {
-        if (!navigator.clipboard) {
-          fallbackCopyTextToClipboard(text);
-          return;
-        }
-        navigator.clipboard.writeText(text).then(
-          function () {
-            console.log("Async: Copying to clipboard was successful!");
-          },
-          function (err) {
-            console.error("Async: Could not copy text: ", err);
-          }
-        );
-      }
-      require([
-        "esri/Map",
-        "esri/views/SceneView",
-        "esri/layers/GeoJSONLayer",
-        "esri/layers/SceneLayer",
-        "esri/layers/GraphicsLayer",
-        "esri/Graphic",
-        "esri/request",
-      ], function (
-        Map,
-        SceneView,
-        GeoJSONLayer,
-        SceneLayer,
-        GraphicsLayer,
-        Graphic,
-        esriRequest
-      ) {
-        // Hiển thị mô hình chữ T của Dinh Độc Lập
-        const DDL_T = new GeoJSONLayer({
-          url: "./GeoJSON/DDL_T.geojson",
-          renderer: {
-            type: "simple",
-            symbol: {
-              type: "polygon-3d",
-              symbolLayers: [
-                {
-                  type: "extrude",
-                  size: 30,
-                  material: {
-                    color: "#caf0f8",
-                  },
-                },
-              ],
-            },
-          },
-        });
-
-        // Hiển thị mô hình chữ O của Dinh Độc Lập
-        const DDL_O = new GeoJSONLayer({
-          url: "./GeoJSON/DDL_O.geojson",
-          renderer: {
-            type: "simple",
-            symbol: {
-              type: "polygon-3d",
-              symbolLayers: [
-                {
-                  type: "extrude",
-                  size: 30,
-                  material: {
-                    color: "#caf0f8",
-                  },
-                },
-              ],
-            },
-          },
-        });
-        const map = new Map({
-          basemap: "topo-vector",
-          ground: "world-elevation",
-          layers: [DDL_T, DDL_O],
-        });
-
-        const view = new SceneView({
-          container: "viewDiv",
-          map: map,
-          camera: {
-            position: [106.696851, 10.783157, 400],
-            heading: 910,
-            tilt: 60,
-          },
-          zoom: 100,
-        });
-
-        //Hiển thị thông tin chi tiết của Dinh Độc Lập
-        view.popup.defaultPopupTemplateEnabled = true;
-
-        //Click copy các tọa độ
-        // view.popup.autoOpenEnabled = false; // Disable the default popup behavior
-        view.on("click", function (event) {
-          // Listen for the click event
-          view.hitTest(event).then(function (hitTestResults) {
-            // Search for features where the user clicked
-            if (hitTestResults.results) {
-              list_points.push([
-                event.mapPoint.longitude,
-                event.mapPoint.latitude,
-              ]);
-              string_points +=
-                "[" +
-                event.mapPoint.longitude +
-                ", " +
-                event.mapPoint.latitude +
-                "],";
-              copyTextToClipboard(string_points);
-              // console.log(list_points);
+        // hàm click lấy copy tọa độ
+        function copyTextToClipboard(text) {
+            if (!navigator.clipboard) {
+                fallbackCopyTextToClipboard(text);
+                return;
             }
-          });
-        });
-      });
-    </script>
-  </head>
+            navigator.clipboard.writeText(text).then(
+                function () {
+                    console.log("Async: Copying to clipboard was successful!");
+                },
+                function (err) {
+                    console.error("Async: Could not copy text: ", err);
+                }
+            );
+        }
+        require([
+            "esri/Map",
+            "esri/views/SceneView",
+            "esri/layers/GeoJSONLayer",
+            "esri/layers/SceneLayer",
+            "esri/layers/GraphicsLayer",
+            "esri/Graphic",
+            "esri/request",
+        ], function (
+            Map,
+            SceneView,
+            GeoJSONLayer,
+            SceneLayer,
+            GraphicsLayer,
+            Graphic,
+            esriRequest
+        ) {
+            // Hiển thị mô hình chữ T của Dinh Độc Lập
+            const DDL_T = new GeoJSONLayer({
+                url: "./GeoJSON/DDL_T.geojson",
+                renderer: {
+                    type: "simple",
+                    symbol: {
+                        type: "polygon-3d",
+                        symbolLayers: [
+                            {
+                                type: "extrude",
+                                size: 30,
+                                material: {
+                                    color: "#caf0f8",
+                                },
+                            },
+                        ],
+                    },
+                },
+            });
 
-  <body>
+            // Hiển thị mô hình chữ O của Dinh Độc Lập
+            const DDL_O = new GeoJSONLayer({
+                url: "./GeoJSON/DDL_O.geojson",
+                renderer: {
+                    type: "simple",
+                    symbol: {
+                        type: "polygon-3d",
+                        symbolLayers: [
+                            {
+                                type: "extrude",
+                                size: 30,
+                                material: {
+                                    color: "#caf0f8",
+                                },
+                            },
+                        ],
+                    },
+                },
+            });
+
+            //Base roof
+            const DDL_T_Roof_Base = new GeoJSONLayer({
+                url: "./GeoJSON/DDL_T_Roof_Base.geojson",
+                renderer: {
+                    type: "simple",
+                    symbol: {
+                        type: "polygon-3d",
+                        symbolLayers: [
+                            {
+                                type: "extrude",
+                                size: 1,
+                                material: {
+                                    color: "#FF0000",
+                                },
+                            },
+                        ],
+                    },
+                },
+            });
+
+            //Main Room
+            const DDL_T_Roof_MainRoom = new GeoJSONLayer({
+                url: "./GeoJSON/DDL_T_Roof_MainRoom.geojson",
+                renderer: {
+                    type: "simple",
+                    symbol: {
+                        type: "polygon-3d",
+                        symbolLayers: [
+                            {
+                                type: "extrude",
+                                size: 5,
+                                material: {
+                                    color: "#F00000",
+                                },
+                            },
+                        ],
+                    },
+                },
+            });
+
+            //Main Room's Roof
+            const DDL_T_Roof_MainRoom_Roof = new GeoJSONLayer({
+                url: "./GeoJSON/DDL_T_Roof_MainRoom_Roof.geojson",
+                renderer: {
+                    type: "simple",
+                    symbol: {
+                        type: "polygon-3d",
+                        symbolLayers: [
+                            {
+                                type: "extrude",
+                                size: 0.6,
+                                material: {
+                                    color: "#F00000",
+                                },
+                            },
+                        ],
+                    },
+                },
+            });
+
+            //Side Rooms
+            const DDL_T_Roof_SideRooms = new GeoJSONLayer({
+                url: "./GeoJSON/DDL_T_Roof_SideRooms.geojson",
+                renderer: {
+                    type: "simple",
+                    symbol: {
+                        type: "polygon-3d",
+                        symbolLayers: [
+                            {
+                                type: "extrude",
+                                size: 5,
+                                material: {
+                                    color: "#F00000",
+                                },
+                            },
+                        ],
+                    },
+                },
+            });
+
+            //Side Room's Roofs
+            const DDL_T_Roof_SideRooms_Roofs = new GeoJSONLayer({
+                url: "./GeoJSON/DDL_T_Roof_SideRooms_Roof.geojson",
+                renderer: {
+                    type: "simple",
+                    symbol: {
+                        type: "polygon-3d",
+                        symbolLayers: [
+                            {
+                                type: "extrude",
+                                size: 0.6,
+                                material: {
+                                    color: "#F00000",
+                                },
+                            },
+                        ],
+                    },
+                },
+            });
+
+            //Roof Banister
+            const DDL_T_Roof_Banister = new GeoJSONLayer({
+                url: "./GeoJSON/DDL_T_Roof_Banister.geojson",
+                renderer: {
+                    type: "simple",
+                    symbol: {
+                        type: "line-3d",
+                        symbolLayers: [
+                            {
+                                type: "line",
+                                size: 1,
+                                material: {
+                                    color: "#0000FF",
+                                }
+                            },
+                        ],
+                    },
+                },
+            });
+
+            //Side Rooms in O shape
+            const DDL_0_Roof_SideRooms = new GeoJSONLayer({
+                url: "./GeoJSON/DDL_O_Roof_SideRooms.geojson",
+                renderer: {
+                    type: "simple",
+                    symbol: {
+                        type: "polygon-3d",
+                        symbolLayers: [
+                            {
+                                type: "extrude",
+                                size: 3,
+                                material: {
+                                    color: "#F00000",
+                                },
+                            },
+                        ],
+                    },
+                },
+            });
+
+            //Side Rooms in O shape Roof
+            const DDL_0_Roof_SideRooms_Roof = new GeoJSONLayer({
+                url: "./GeoJSON/DDL_O_Roof_SideRooms_Roof.geojson",
+                renderer: {
+                    type: "simple",
+                    symbol: {
+                        type: "polygon-3d",
+                        symbolLayers: [
+                            {
+                                type: "extrude",
+                                size: 0.3,
+                                material: {
+                                    color: "#F00000",
+                                },
+                            },
+                        ],
+                    },
+                },
+            });
+
+            //Flag
+            const DDL_T_Roof_Flag = new GeoJSONLayer({
+                url: "./GeoJSON/DDL_T_Roof_Flag.geojson",
+                renderer: {
+                    type: "simple",
+                    symbol: {
+                        type: "point-3d",
+                        symbolLayers: [
+                            {
+                                type: "object",
+                                width: 0.5,
+                                height: 20,
+                                resource: {
+                                    primitive: "cone"
+                                },
+                                material: {
+                                    color: "#FF0000"
+                                },
+                            },
+                            {
+                                type: "object",
+                                width: 5,
+                                height: 2,
+                                depth: 0.1,
+                                resource: {
+                                    primitive: "cylinder"
+                                },
+                                material: {
+                                    color: "#FF0000"
+                                },
+                                anchor: "relative",
+                                anchorPosition: { x: 0.5, y: 0, z: -9 },
+                            },
+                        ],
+                    },
+                },
+            });
+
+            const map = new Map({
+                basemap: "topo-vector",
+                ground: "world-elevation",
+                layers: [DDL_T, DDL_O, DDL_T_Roof_Base,
+                    DDL_T_Roof_Banister,
+                    DDL_T_Roof_MainRoom,
+                    DDL_T_Roof_SideRooms,
+                    DDL_T_Roof_SideRooms_Roofs,
+                    DDL_T_Roof_MainRoom_Roof,
+                    DDL_0_Roof_SideRooms,
+                    DDL_0_Roof_SideRooms_Roof,
+                    DDL_T_Roof_Flag],
+            });
+
+            const view = new SceneView({
+                container: "viewDiv",
+                map: map,
+                camera: {
+                    position: [106.696851, 10.783157, 400],
+                    heading: 910,
+                    tilt: 60,
+                },
+                zoom: 100
+            });
+
+        });
+    </script>
+</head>
+
+<body>
     <div id="viewDiv"></div>
-  </body>
+</body>
+
 </html>
