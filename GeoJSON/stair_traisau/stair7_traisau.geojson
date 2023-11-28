@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [106.69518280097927, 10.776550327039722, 14.2],
+            [106.69519886011382, 10.776568162515533, 14.2],
+            [106.69519923168623, 10.77656782795023, 14.2],
+            [106.69518317255168, 10.776549992474418, 14.2]
+          ]
+        ]
+      },
+      "properties": {
+        "Name": "Stair trái sau 7"
+      },
+      "id": 48
+    }
+  ],
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  }
+}

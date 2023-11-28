@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [106.69518259637215, 10.777371651004218, 15],
+            [106.69513011164983, 10.777311274237801, 15],
+            [106.69512973429504, 10.777311602267316, 15],
+            [106.69518221901735, 10.777371979033733, 15]
+          ]
+        ]
+      },
+      "properties": {
+        "Name": "Stair phải trước 7"
+      },
+      "id": 48
+    }
+  ],
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [106.69517806811466, 10.777375587358392, 15],
+            [106.69512558339234, 10.777315210591976, 15],
+            [106.69512520603755, 10.77731553862149, 15],
+            [106.69517769075986, 10.777375915387907, 15]
+          ]
+        ]
+      },
+      "properties": {
+        "Name": "Stair phải trước 4"
+      },
+      "id": 48
+    }
+  ],
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  }
+}

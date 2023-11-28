@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [106.69518205783444, 10.776550996170329, 14.2],
+            [106.695198116969, 10.77656883164614, 14.2],
+            [106.69519848854141, 10.776568497080836, 14.2],
+            [106.69518242940686, 10.776550661605025, 14.2]
+          ]
+        ]
+      },
+      "properties": {
+        "Name": "Stair trái sau 9"
+      },
+      "id": 48
+    }
+  ],
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  }
+}

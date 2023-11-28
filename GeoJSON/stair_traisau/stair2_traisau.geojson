@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [106.69518614513098, 10.776547315951992, 14.2],
+            [106.69520220426553, 10.776565151427803, 14.2],
+            [106.69520257583794, 10.7765648168625, 14.2],
+            [106.69518651670339, 10.776546981386689, 14.2]
+          ]
+        ]
+      },
+      "properties": {
+        "Name": "Stair trái sau 2"
+      },
+      "id": 48
+    }
+  ],
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  }
+}

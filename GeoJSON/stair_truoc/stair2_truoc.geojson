@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [106.69559854503181, 10.777210450578124, 15],
+            [106.69555326245701, 10.777249814119862, 15],
+            [106.69555359048653, 10.777250191474653, 15],
+            [106.69559887306133, 10.777210827932915, 15]
+          ]
+        ]
+      },
+      "properties": {
+        "Name": "Stair trước 2"
+      },
+      "id": 48
+    }
+  ],
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  }
+}

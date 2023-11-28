@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [106.69494889915724, 10.776756310384808, 14.3],
+            [106.69496495829179, 10.77677414586062, 14.3],
+            [106.69496458671938, 10.776774480425923, 14.3],
+            [106.69494852758483, 10.776756644950112, 14.3]
+          ]
+        ]
+      },
+      "properties": {
+        "Name": "Stair phải sau 3"
+      },
+      "id": 48
+    }
+  ],
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  }
+}

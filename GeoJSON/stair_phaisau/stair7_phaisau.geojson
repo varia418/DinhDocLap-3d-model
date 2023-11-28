@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [106.69495187173654, 10.776753633862382, 14.3],
+            [106.69496793087109, 10.776771469338193, 14.3],
+            [106.69496755929868, 10.776771803903497, 14.3],
+            [106.69495150016412, 10.776753968427686, 14.3]
+          ]
+        ]
+      },
+      "properties": {
+        "Name": "Stair phải sau 7"
+      },
+      "id": 48
+    }
+  ],
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  }
+}

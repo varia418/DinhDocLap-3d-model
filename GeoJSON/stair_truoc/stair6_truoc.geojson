@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [106.69554899807332, 10.777244908507589, 15],
+            [106.69559428064812, 10.77720554496585, 15],
+            [106.69559460867764, 10.777205922320642, 15],
+            [106.69554932610284, 10.77724528586238, 15]
+          ]
+        ]
+      },
+      "properties": {
+        "Name": "Stair trước 6"
+      },
+      "id": 48
+    }
+  ],
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  }
+}

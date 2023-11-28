@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [106.69518221901735, 10.777371979033733, 15],
+            [106.69512973429504, 10.777311602267316, 15],
+            [106.69512935694024, 10.77731193029683, 15],
+            [106.69518184166256, 10.777372307063247, 15]
+          ]
+        ]
+      },
+      "properties": {
+        "Name": "Stair phải trước 6"
+      },
+      "id": 48
+    }
+  ],
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  }
+}

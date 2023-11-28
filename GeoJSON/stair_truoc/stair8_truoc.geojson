@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [106.6955936245891, 10.777204790256269, 15],
+            [106.69554834201429, 10.777244153798007, 15],
+            [106.6955486700438, 10.777244531152798, 15],
+            [106.69559395261861, 10.77720516761106, 15]
+          ]
+        ]
+      },
+      "properties": {
+        "Name": "Stair trước 8"
+      },
+      "id": 48
+    }
+  ],
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  }
+}

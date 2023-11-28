@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [106.69559329655958, 10.777204412901478, 15],
+            [106.69554801398478, 10.777243776443216, 15],
+            [106.69554834201429, 10.777244153798007, 15],
+            [106.6955936245891, 10.777204790256269, 15]
+          ]
+        ]
+      },
+      "properties": {
+        "Name": "Stair trước 9"
+      },
+      "id": 48
+    }
+  ],
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  }
+}
