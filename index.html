@@ -71,7 +71,8 @@
             "esri/geometry/support/MeshTexture",
             "esri/geometry/SpatialReference",
             "esri/rest/geometryService",
-            "esri/rest/support/DistanceParameters"
+            "esri/rest/support/DistanceParameters",
+            "esri/geometry/support/meshUtils"
         ], function (
             Map,
             SceneView,
@@ -85,7 +86,8 @@
             MeshTexture,
             SpatialReference,
             geometryService,
-            DistanceParameters
+            DistanceParameters,
+            meshUtils
         ) {
             // Hiển thị mô hình chữ T của Dinh Độc Lập
 
@@ -138,60 +140,122 @@
             //     });
 
 
-            // const location = new Point({ x: 106.69546012793347, y: 10.777092119827023 });
-            // const meshTextureByUrl = new MeshTexture({
-            //     url: "./texture-mat-truoc.png"
-            // });
-            // let mesh = Mesh.createBox(location, {
-            //     size: {
-            //         width: 60,
-            //         height: 50,
-            //         depth: 25
-            //     },
-            //     material: {
-            //         colorTexture: meshTextureByUrl
-            //     }
-            // });
-            // mesh.rotate(0, 0, -42)
+            const DLL_location = new Point({ x: 106.69546012873347, y: 10.777092119827023, z: 15 });
 
-            // let graphic = new Graphic({
-            //     geometry: mesh,
-            //     symbol: {
-            //         type: "mesh-3d",
-            //         symbolLayers: [{ type: "fill" }]
-            //     }
-            // });
-            const location = new Point({ x: 106.69546012873347, y: 10.777092119827023, z: 15 });
+            function movePoint(pt, distance, angle) {
+                //rayon of the earth
+                const R = 6371e3;
+                // latitude in rad
+                let lat1 = pt.latitude * Math.PI / 180;
+                // longitude in rad
+                let long1 = pt.longitude * Math.PI / 180;
+                // the angle between the 2 points in rad
+                angle = (90 - angle) * Math.PI / 180;
+                const sigma = distance / R;
+                const delLat = sigma * Math.cos(angle);
+                //latitude of the destination point
+                let lat2 = (lat1 + delLat) * 180 / Math.PI;
+                const del = Math.log(Math.tan(lat2 / 2 + Math.PI / 4) / Math.tan(lat1 / 2 + Math.PI / 4));
+                const q = Math.cos(lat1)
 
-            const meshTextureByUrl = new MeshTexture({
-                url: "./texture-mat-truoc.jpg",
-                wrap: {
-                    vertical: "clamp",
-                    horizontal: "clamp"
-                }
-            });
+                const delLong = sigma * Math.sin(angle) / q;
+                //longitude of the destination point
+                let long2 = (long1 + delLong) * 180 / Math.PI;
 
-            let mesh = Mesh.createBox(location, {
-                size: {
-                    width: a - 2 * f,
-                    height: 25,
-                    depth: c - g
-                },
-                material: {
-                    colorTexture: meshTextureByUrl
-                }
-            });
-            mesh.rotate(0, 0, -43);
+                return new Point({ x: long2, y: lat2, z: pt.z });
+            }
 
-            let graphic = new Graphic({
-                geometry: mesh,
+            function createFrontBuilding(pt) {
+                const middleTexture = new MeshTexture({
+                    url: "./texture-mat-truoc-giua.jpg"
+                });
+                const untitledTexture = new MeshTexture({
+                    url: "./texture-untitled.jpg"
+                });
+
+                const middle = Mesh.createBox(pt, {
+                    size: {
+                        width: a - 2 * f,
+                        height: 25,
+                        depth: c - g
+                    },
+                    material: {
+                        colorTexture: middleTexture
+                    }
+                });
+
+                const leftLocation = movePoint(pt, a / 2 - f / 2, -47);
+                const left = Mesh.createBox(leftLocation, {
+                    size: {
+                        width: f,
+                        height: 25,
+                        depth: c
+                    },
+                    material: {
+                        colorTexture: untitledTexture
+                    }
+                });
+
+                const rightLocation = movePoint(pt, - a / 2 + f / 2, -39);
+                const right = Mesh.createBox(rightLocation, {
+                    size: {
+                        width: f,
+                        height: 25,
+                        depth: c
+                    },
+                    material: {
+                        colorTexture: untitledTexture
+                    }
+                });
+
+                middle.rotate(0, 0, -43);
+                left.rotate(0, 0, -43);
+                right.rotate(0, 0, -43);
+
+                return meshUtils.merge([middle, left, right]);
+            }
+
+            function createMiddleBuilding(pt) {
+                const untitledTexture = new MeshTexture({
+                    url: "./texture-untitled.jpg"
+                });
+
+                const middleBuildingLocation = movePoint(pt, (c - g) / 2 + i / 2, -43 - 90);
+                const building = Mesh.createBox(middleBuildingLocation, {
+                    size: {
+                        width: l - 2 * j,
+                        height: 25,
+                        depth: i
+                    },
+                    material: {
+                        colorTexture: untitledTexture
+                    }
+                });
+
+                building.rotate(0, 0, -43);
+
+                return building;
+            }
+
+
+
+            let frontBuilding = new Graphic({
+                geometry: createFrontBuilding(DLL_location),
                 symbol: {
                     type: "mesh-3d",
                     symbolLayers: [{ type: "fill" }]
                 }
             });
 
-            view.graphics.add(graphic);
+            let middleBuilding = new Graphic({
+                geometry: createMiddleBuilding(DLL_location),
+                symbol: {
+                    type: "mesh-3d",
+                    symbolLayers: [{ type: "fill" }]
+                }
+            });
+            view.graphics.add(frontBuilding);
+            view.graphics.add(middleBuilding);
 
 
             //Hiển thị thông tin chi tiết của Dinh Độc Lập
