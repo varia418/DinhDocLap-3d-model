@@ -105,6 +105,39 @@
                 },
                 zoom: 100,
             });
+            const a = 86.19609697819396;
+            const b = 35.777078869019;
+            const c = 29.373043461846656;
+            const d = 14.893092119035835;
+            const e = 5.362867866395603;
+            const f = 13.196519450343406;
+            const g = 4.669535492104023;
+            const h = 19.326979335433652;
+            const i = 21.470659471369636;
+            const j = 4.662351792212651;
+            const k = 31.106531103747145;
+            const l = 32.64048964664293;
+            const m = 11.65394966782121;
+            const n = 10.94537832397216;
+            const o = 15.35567862550349;
+
+            // Calculate distance
+            // var pt1 = new Point(106.69519037145832, 10.776720344256304);
+            // var pt2 = new Point(106.69509889023087, 10.776615033789618);
+
+            // var distParams = new DistanceParameters();
+            // distParams.distanceUnit = "meters"
+            // distParams.geometry1 = pt1;
+            // distParams.geometry2 = pt2;
+            // distParams.geodesic = true;
+
+            // const url = "https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer";
+            // geometryService.distance(url, distParams)
+            //     .then(function (distance) {
+            //         console.log(distance);
+            //     });
+
+
             // const location = new Point({ x: 106.69546012793347, y: 10.777092119827023 });
             // const meshTextureByUrl = new MeshTexture({
             //     url: "./texture-mat-truoc.png"
@@ -130,14 +163,22 @@
             // });
             const location = new Point({ x: 106.69546012873347, y: 10.777092119827023, z: 15 });
 
+            const meshTextureByUrl = new MeshTexture({
+                url: "./texture-mat-truoc.jpg",
+                wrap: {
+                    vertical: "clamp",
+                    horizontal: "clamp"
+                }
+            });
+
             let mesh = Mesh.createBox(location, {
                 size: {
-                    width: 87,
-                    height: 30,
-                    depth: 1
+                    width: a - 2 * f,
+                    height: 25,
+                    depth: c - g
                 },
                 material: {
-                    color: "#a8a8a8"
+                    colorTexture: meshTextureByUrl
                 }
             });
             mesh.rotate(0, 0, -43);
@@ -151,37 +192,7 @@
             });
 
             view.graphics.add(graphic);
-            let a = 86.19609697819396;
-            let b = 35.777078869019;
-            let c = 29.373043461846656;
-            let d = 14.893092119035835;
-            let e = 5.362867866395603;
-            let f = 13.196519450343406;
-            let g = 4.669535492104023;
-            let h = 19.326979335433652;
-            let i = 21.470659471369636;
-            let j = 4.662351792212651;
-            let k = 31.106531103747145;
-            let l = 32.64048964664293;
-            let m = 11.65394966782121;
-            let n = 10.94537832397216;
-            let o = 15.35567862550349;
 
-            // Calculate distance
-            // var pt1 = new Point(106.69519037145832, 10.776720344256304);
-            // var pt2 = new Point(106.69509889023087, 10.776615033789618);
-
-            // var distParams = new DistanceParameters();
-            // distParams.distanceUnit = "meters"
-            // distParams.geometry1 = pt1;
-            // distParams.geometry2 = pt2;
-            // distParams.geodesic = true;
-
-            // const url = "https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer";
-            // geometryService.distance(url, distParams)
-            //     .then(function (distance) {
-            //         console.log(distance);
-            //     });
 
             //Hiển thị thông tin chi tiết của Dinh Độc Lập
             view.popup.defaultPopupTemplateEnabled = true;
