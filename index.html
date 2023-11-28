@@ -97,6 +97,28 @@
                 },
                 zoom: 100,
             });
+            const location = new Point({ x: 106.69546012793347, y: 10.777092119827023 });
+            let mesh = Mesh.createBox(location, {
+                size: {
+                    width: 60,
+                    height: 50,
+                    depth: 25
+                },
+                material: {
+                    color: "#949391"
+                }
+            });
+            mesh.rotate(0, 0, -42)
+
+            let graphic = new Graphic({
+                geometry: mesh,
+                symbol: {
+                    type: "mesh-3d",
+                    symbolLayers: [{ type: "fill" }]
+                }
+            });
+
+            view.graphics.add(graphic);
 
             //Hiển thị thông tin chi tiết của Dinh Độc Lập
             view.popup.defaultPopupTemplateEnabled = true;
