@@ -68,6 +68,10 @@
             "esri/request",
             "esri/geometry/Point",
             "esri/geometry/Mesh",
+            "esri/geometry/support/MeshTexture",
+            "esri/geometry/SpatialReference",
+            "esri/rest/geometryService",
+            "esri/rest/support/DistanceParameters"
         ], function (
             Map,
             SceneView,
@@ -77,7 +81,11 @@
             Graphic,
             esriRequest,
             Point,
-            Mesh
+            Mesh,
+            MeshTexture,
+            SpatialReference,
+            geometryService,
+            DistanceParameters
         ) {
             // Hiển thị mô hình chữ T của Dinh Độc Lập
 
@@ -97,18 +105,42 @@
                 },
                 zoom: 100,
             });
-            const location = new Point({ x: 106.69546012793347, y: 10.777092119827023 });
+            // const location = new Point({ x: 106.69546012793347, y: 10.777092119827023 });
+            // const meshTextureByUrl = new MeshTexture({
+            //     url: "./texture-mat-truoc.png"
+            // });
+            // let mesh = Mesh.createBox(location, {
+            //     size: {
+            //         width: 60,
+            //         height: 50,
+            //         depth: 25
+            //     },
+            //     material: {
+            //         colorTexture: meshTextureByUrl
+            //     }
+            // });
+            // mesh.rotate(0, 0, -42)
+
+            // let graphic = new Graphic({
+            //     geometry: mesh,
+            //     symbol: {
+            //         type: "mesh-3d",
+            //         symbolLayers: [{ type: "fill" }]
+            //     }
+            // });
+            const location = new Point({ x: 106.69546012873347, y: 10.777092119827023, z: 15 });
+
             let mesh = Mesh.createBox(location, {
                 size: {
-                    width: 60,
-                    height: 50,
-                    depth: 25
+                    width: 87,
+                    height: 30,
+                    depth: 1
                 },
                 material: {
-                    color: "#949391"
+                    color: "#a8a8a8"
                 }
             });
-            mesh.rotate(0, 0, -42)
+            mesh.rotate(0, 0, -43);
 
             let graphic = new Graphic({
                 geometry: mesh,
@@ -119,82 +151,40 @@
             });
 
             view.graphics.add(graphic);
+            let a = 86.19609697819396;
+            let b = 35.777078869019;
+            let c = 29.373043461846656;
+            let d = 14.893092119035835;
+            let e = 5.362867866395603;
+            let f = 13.196519450343406;
+            let g = 4.669535492104023;
+            let h = 19.326979335433652;
+            let i = 21.470659471369636;
+            let j = 4.662351792212651;
+            let k = 31.106531103747145;
+            let l = 32.64048964664293;
+            let m = 11.65394966782121;
+            let n = 10.94537832397216;
+            let o = 15.35567862550349;
+
+            // Calculate distance
+            // var pt1 = new Point(106.69519037145832, 10.776720344256304);
+            // var pt2 = new Point(106.69509889023087, 10.776615033789618);
+
+            // var distParams = new DistanceParameters();
+            // distParams.distanceUnit = "meters"
+            // distParams.geometry1 = pt1;
+            // distParams.geometry2 = pt2;
+            // distParams.geodesic = true;
+
+            // const url = "https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer";
+            // geometryService.distance(url, distParams)
+            //     .then(function (distance) {
+            //         console.log(distance);
+            //     });
 
             //Hiển thị thông tin chi tiết của Dinh Độc Lập
             view.popup.defaultPopupTemplateEnabled = true;
-
-            fetch('./GeoJSON/Tree_corr.json')
-                .then((response) => response.json())
-                .then((json) => {
-
-                    for (var corr in json) {
-                        const tree_loc = new Point({
-                            x: json[corr][0],
-                            y: json[corr][1],
-                            z: 15
-
-
-                        });
-
-
-                        Mesh.createFromGLTF(tree_loc, "./Model/Tree/Tree.glb") //Thêm tượng demo
-                            .then(function (geometry) {
-                                // increase it a factor of 3
-                                geometry.scale(5, { origin: tree_loc });
-                                // rotate it by 90 degrees around the z axis
-                                geometry.rotate(0, 0, 114);
-                                // add it to a graphic
-                                const graphic = new Graphic({
-                                    geometry,
-                                    symbol: {
-                                        type: "mesh-3d", // autocasts as new MeshSymbol3D()
-                                        symbolLayers: [{
-                                            type: "fill", // autocasts as new FillSymbol3DLayer()
-                                            material: {
-                                                //color: "gray"
-                                            },
-                                            size: 1000
-                                        }]
-                                    }
-                                });
-
-                                view.graphics.add(graphic)
-                            })
-                            .catch(console.error);
-                    }
-                })
-
-
-            const fountain_loc = new Point({
-                x: 106.69596145527656,
-                y: 10.777612314732947,
-                z: 16
-            });
-
-            Mesh.createFromGLTF(fountain_loc, "./Model/Fountain/Fountain.gltf") //Thêm tượng demo
-                .then(function (geometry) {
-                    // increase it a factor of 3
-                    geometry.scale(0.5, { origin: fountain_loc });
-                    // rotate it by 90 degrees around the z axis
-                    geometry.rotate(0, 0, 114);
-                    // add it to a graphic
-                    const graphic = new Graphic({
-                        geometry,
-                        symbol: {
-                            type: "mesh-3d", // autocasts as new MeshSymbol3D()
-                            symbolLayers: [{
-                                type: "fill", // autocasts as new FillSymbol3DLayer()
-                                material: {
-                                    //color: "gray"
-                                },
-                                size: 1000
-                            }]
-                        }
-                    });
-
-                    view.graphics.add(graphic)
-                })
-                .catch(console.error);
 
             //Click copy các tọa độ
             // view.popup.autoOpenEnabled = false; // Disable the default popup behavior
