@@ -1,26 +1,23 @@
 {
-    "type": "FeatureCollection",
-    "features": [
-      {
-        "type": "MainRoom_Roof",
-        "properties": {
-          "name": "Mai cua gian nha chinh cua mai nha chu T"
-        },
+	"type": "FeatureCollection",
+	"features": [
+		{
+			"type": "MainRoom_Roof",
+			"properties": {
+				"name": "Mai cua gian nha chinh cua mai nha chu T"
+			},
 
-        "geometry": {
-          "type": "Polygon",
-          "coordinates": [
-              [
-                [106.69548016136181, 10.777336139942513, 35.5],
-                [106.69561091905447, 10.777216910772266, 35.5],
-                [106.69546339755506, 10.777052229520226, 35.5],
-                [106.69532861654879, 10.777175411105258, 35.5]
-              ]
-            ]
-        }
-      }
-      
-      
-    ]
-  }
-  
+			"geometry": {
+				"type": "Polygon",
+				"coordinates": [
+					[
+						[106.69548016136181, 10.777336139942513, 50.5],
+						[106.69561091905447, 10.777216910772266, 50.5],
+						[106.69546339755506, 10.777052229520226, 50.5],
+						[106.69532861654879, 10.777175411105258, 50.5]
+					]
+				]
+			}
+		}
+	]
+}

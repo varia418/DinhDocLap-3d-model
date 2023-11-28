@@ -1,17 +1,16 @@
 {
-    "type": "FeatureCollection",
-    "features": [
-      {
-        "type": "FlagPole",
-        "properties": {
-          "name": "Flag Pole",
-          "height": 10.0
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [106.69556007862943, 10.777273125366559, 30]
-          
-        }
-      }
-    ]
+	"type": "FeatureCollection",
+	"features": [
+		{
+			"type": "FlagPole",
+			"properties": {
+				"name": "Flag Pole",
+				"height": 10.0
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [106.69556007862943, 10.777273125366559, 45]
+			}
+		}
+	]
 }
