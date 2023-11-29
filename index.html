@@ -119,13 +119,13 @@
             const j = 4.662351792212651;
             const k = 31.106531103747145;
             const l = 32.64048964664293;
-            const m = 11.65394966782121;
+            const m = 10.77580050922984;
             const n = 10.94537832397216;
             const o = 15.35567862550349;
 
             // Calculate distance
-            // var pt1 = new Point(106.69519037145832, 10.776720344256304);
-            // var pt2 = new Point(106.69509889023087, 10.776615033789618);
+            // var pt1 = new Point(106.69517977016402, 10.776858826105617);
+            // var pt2 = new Point(106.69510967218483, 10.776790367214359);
 
             // var distParams = new DistanceParameters();
             // distParams.distanceUnit = "meters"
@@ -225,7 +225,7 @@
                     size: {
                         width: l - 2 * j,
                         height: 25,
-                        depth: i
+                        depth: i + o - 3
                     },
                     material: {
                         colorTexture: untitledTexture
@@ -237,7 +237,56 @@
                 return building;
             }
 
+            function createBackBuilding(pt) {
+                const untitledTexture = new MeshTexture({
+                    url: "./texture-untitled.jpg"
+                });
 
+                const middleBuildingLocation = movePoint(pt, (c - g) / 2 + i / 2, -43 - 90);
+                const middleLocation = movePoint(middleBuildingLocation, i / 2 + k / 2, -43 - 90);
+                const leftLocation = movePoint(middleLocation, m / 2 + n / 2, -43);
+                const rightLocation = movePoint(middleLocation, - m / 2 - n / 2, -43);
+                const backLocation = movePoint(middleLocation, m / 2 + o / 2 - 5, -43 - 90);
+
+                const left = Mesh.createBox(leftLocation, {
+                    size: {
+                        width: n,
+                        height: 25,
+                        depth: k
+                    },
+                    material: {
+                        colorTexture: untitledTexture
+                    }
+                });
+
+                const right = Mesh.createBox(rightLocation, {
+                    size: {
+                        width: n,
+                        height: 25,
+                        depth: k
+                    },
+                    material: {
+                        colorTexture: untitledTexture
+                    }
+                });
+
+                const back = Mesh.createBox(backLocation, {
+                    size: {
+                        width: l,
+                        height: 25,
+                        depth: o
+                    },
+                    material: {
+                        colorTexture: untitledTexture
+                    }
+                });
+
+                left.rotate(0, 0, -43);
+                right.rotate(0, 0, -43);
+                back.rotate(0, 0, -43);
+
+                return meshUtils.merge([left, right, back]);
+            }
 
             let frontBuilding = new Graphic({
                 geometry: createFrontBuilding(DLL_location),
@@ -254,8 +303,19 @@
                     symbolLayers: [{ type: "fill" }]
                 }
             });
+
+            let backBuilding = new Graphic({
+                geometry: createBackBuilding(DLL_location),
+                symbol: {
+                    type: "mesh-3d",
+                    symbolLayers: [{ type: "fill" }]
+                }
+            });
+
+
             view.graphics.add(frontBuilding);
             view.graphics.add(middleBuilding);
+            view.graphics.add(backBuilding);
 
 
             //Hiển thị thông tin chi tiết của Dinh Độc Lập
