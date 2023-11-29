@@ -1,1775 +1,1764 @@
 <html>
-
-<head>
+  <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
 
     <title>Dinh Độc Lập</title>
     <style>
-        html,
-        body,
-        #viewDiv {
-            padding: 0;
-            margin: 0;
-            height: 100%;
-            width: 100%;
-        }
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
 
-        /* Style mô hình Dinh Độc Lập */
-        #back {
-            position: absolute;
-            bottom: 20px;
-        }
+      /* Style mô hình Dinh Độc Lập */
+      #back {
+        position: absolute;
+        bottom: 20px;
+      }
 
-        #back i {
-            background-image: url(app/public/img/back.svg);
-            background-repeat: no-repeat;
-            display: inline-block;
-            width: 100px;
-            height: 25px;
-            padding-left: 25px;
-            padding-top: 2px;
-            margin: 10px;
-            cursor: pointer;
-            background-size: 20px;
-        }
+      #back i {
+        background-image: url(app/public/img/back.svg);
+        background-repeat: no-repeat;
+        display: inline-block;
+        width: 100px;
+        height: 25px;
+        padding-left: 25px;
+        padding-top: 2px;
+        margin: 10px;
+        cursor: pointer;
+        background-size: 20px;
+      }
     </style>
     <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css" />
     <script src="https://js.arcgis.com/4.28/"></script>
 
     <script>
-        // Khai báo biến click copy lấy tọa độ
-        var map;
-        var list_points = [];
-        var string_points = "";
+      // Khai báo biến click copy lấy tọa độ
+      var map;
+      var list_points = [];
+      var string_points = '';
 
-        // hàm click lấy copy tọa độ
-        function copyTextToClipboard(text) {
-            if (!navigator.clipboard) {
-                fallbackCopyTextToClipboard(text);
-                return;
-            }
-            navigator.clipboard.writeText(text).then(
-                function () {
-                    console.log("Async: Copying to clipboard was successful!");
-                },
-                function (err) {
-                    console.error("Async: Could not copy text: ", err);
-                }
-            );
+      // hàm click lấy copy tọa độ
+      function copyTextToClipboard(text) {
+        if (!navigator.clipboard) {
+          fallbackCopyTextToClipboard(text);
+          return;
         }
-        require([
-            "esri/Map",
-            "esri/views/SceneView",
-            "esri/layers/GeoJSONLayer",
-            "esri/layers/SceneLayer",
-            "esri/layers/GraphicsLayer",
-            "esri/Graphic",
-            "esri/request",
-            "esri/geometry/Point",
-            "esri/geometry/Mesh",
-            "esri/geometry/support/MeshTexture",
-            "esri/geometry/SpatialReference",
-            "esri/rest/geometryService",
-            "esri/rest/support/DistanceParameters",
-            "esri/geometry/support/meshUtils"
-        ], function (
-            Map,
-            SceneView,
-            GeoJSONLayer,
-            SceneLayer,
-            GraphicsLayer,
-            Graphic,
-            esriRequest,
-            Point,
-            Mesh,
-            MeshTexture,
-            SpatialReference,
-            geometryService,
-            DistanceParameters,
-            meshUtils
-        ) {
-            const a = 86.19609697819396;
-            const b = 35.777078869019;
-            const c = 29.373043461846656;
-            const d = 14.893092119035835;
-            const e = 5.362867866395603;
-            const f = 13.196519450343406;
-            const g = 4.669535492104023;
-            const h = 19.326979335433652;
-            const i = 21.470659471369636;
-            const j = 4.662351792212651;
-            const k = 31.106531103747145;
-            const l = 32.64048964664293;
-            const m = 10.77580050922984;
-            const n = 10.94537832397216;
-            const o = 15.35567862550349;
+        navigator.clipboard.writeText(text).then(
+          function () {
+            console.log('Async: Copying to clipboard was successful!');
+          },
+          function (err) {
+            console.error('Async: Could not copy text: ', err);
+          }
+        );
+      }
+      require([
+        'esri/Map',
+        'esri/views/SceneView',
+        'esri/layers/GeoJSONLayer',
+        'esri/layers/SceneLayer',
+        'esri/layers/GraphicsLayer',
+        'esri/Graphic',
+        'esri/request',
+        'esri/geometry/Point',
+        'esri/geometry/Mesh',
+        'esri/geometry/support/MeshTexture',
+        'esri/geometry/SpatialReference',
+        'esri/rest/geometryService',
+        'esri/rest/support/DistanceParameters',
+        'esri/geometry/support/meshUtils',
+      ], function (
+        Map,
+        SceneView,
+        GeoJSONLayer,
+        SceneLayer,
+        GraphicsLayer,
+        Graphic,
+        esriRequest,
+        Point,
+        Mesh,
+        MeshTexture,
+        SpatialReference,
+        geometryService,
+        DistanceParameters,
+        meshUtils
+      ) {
+        const a = 86.19609697819396;
+        const b = 35.777078869019;
+        const c = 29.373043461846656;
+        const d = 14.893092119035835;
+        const e = 5.362867866395603;
+        const f = 13.196519450343406;
+        const g = 4.669535492104023;
+        const h = 19.326979335433652;
+        const i = 21.470659471369636;
+        const j = 4.662351792212651;
+        const k = 31.106531103747145;
+        const l = 32.64048964664293;
+        const m = 10.77580050922984;
+        const n = 10.94537832397216;
+        const o = 15.35567862550349;
 
-            //Base roof
-            const DDL_T_Roof_Base = new GeoJSONLayer({
-                url: "./GeoJSON/DDL_T_Roof_Base.geojson",
-                renderer: {
-                    type: "simple",
-                    symbol: {
-                        type: "polygon-3d",
-                        symbolLayers: [
-                            {
-                                type: "extrude",
-                                size: 1,
-                                material: {
-                                    color: "#FF0000",
-                                },
-                            },
-                        ],
-                    },
+        //Base roof
+        const DDL_T_Roof_Base = new GeoJSONLayer({
+          url: './GeoJSON/DDL_T_Roof_Base.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 1,
+                  material: {
+                    color: '#FF0000',
+                  },
                 },
-            });
+              ],
+            },
+          },
+        });
 
-            //Main Room
-            const DDL_T_Roof_MainRoom = new GeoJSONLayer({
-                url: "./GeoJSON/DDL_T_Roof_MainRoom.geojson",
-                renderer: {
-                    type: "simple",
-                    symbol: {
-                        type: "polygon-3d",
-                        symbolLayers: [
-                            {
-                                type: "extrude",
-                                size: 5,
-                                material: {
-                                    color: "#0000ff",
-                                },
-                            },
-                        ],
-                    },
+        //Main Room
+        const DDL_T_Roof_MainRoom = new GeoJSONLayer({
+          url: './GeoJSON/DDL_T_Roof_MainRoom.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 5,
+                  material: {
+                    color: '#0000ff',
+                  },
                 },
-            });
+              ],
+            },
+          },
+        });
 
-            //Main Room's Roof
-            const DDL_T_Roof_MainRoom_Roof = new GeoJSONLayer({
-                url: "./GeoJSON/DDL_T_Roof_MainRoom_Roof.geojson",
-                renderer: {
-                    type: "simple",
-                    symbol: {
-                        type: "polygon-3d",
-                        symbolLayers: [
-                            {
-                                type: "extrude",
-                                size: 0.6,
-                                material: {
-                                    color: "#F00000",
-                                },
-                            },
-                        ],
-                    },
+        //Main Room's Roof
+        const DDL_T_Roof_MainRoom_Roof = new GeoJSONLayer({
+          url: './GeoJSON/DDL_T_Roof_MainRoom_Roof.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.6,
+                  material: {
+                    color: '#F00000',
+                  },
                 },
-            });
+              ],
+            },
+          },
+        });
 
-            //Side Rooms
-            const DDL_T_Roof_SideRooms = new GeoJSONLayer({
-                url: "./GeoJSON/DDL_T_Roof_SideRooms.geojson",
-                renderer: {
-                    type: "simple",
-                    symbol: {
-                        type: "polygon-3d",
-                        symbolLayers: [
-                            {
-                                type: "extrude",
-                                size: 5,
-                                material: {
-                                    color: "#0000FF",
-                                },
-                            },
-                        ],
-                    },
+        //Side Rooms
+        const DDL_T_Roof_SideRooms = new GeoJSONLayer({
+          url: './GeoJSON/DDL_T_Roof_SideRooms.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 5,
+                  material: {
+                    color: '#0000FF',
+                  },
                 },
-            });
+              ],
+            },
+          },
+        });
 
-            //Side Room's Roofs
-            const DDL_T_Roof_SideRooms_Roofs = new GeoJSONLayer({
-                url: "./GeoJSON/DDL_T_Roof_SideRooms_Roof.geojson",
-                renderer: {
-                    type: "simple",
-                    symbol: {
-                        type: "polygon-3d",
-                        symbolLayers: [
-                            {
-                                type: "extrude",
-                                size: 0.6,
-                                material: {
-                                    color: "#F00000",
-                                },
-                            },
-                        ],
-                    },
+        //Side Room's Roofs
+        const DDL_T_Roof_SideRooms_Roofs = new GeoJSONLayer({
+          url: './GeoJSON/DDL_T_Roof_SideRooms_Roof.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.6,
+                  material: {
+                    color: '#F00000',
+                  },
                 },
-            });
+              ],
+            },
+          },
+        });
 
-            //Roof Banister
-            const DDL_T_Roof_Banister = new GeoJSONLayer({
-                url: "./GeoJSON/DDL_T_Roof_Banister.geojson",
-                renderer: {
-                    type: "simple",
-                    symbol: {
-                        type: "line-3d",
-                        symbolLayers: [
-                            {
-                                type: "line",
-                                size: 1,
-                                material: {
-                                    color: "#0000FF",
-                                }
-                            },
-                        ],
-                    },
+        //Roof Banister
+        const DDL_T_Roof_Banister = new GeoJSONLayer({
+          url: './GeoJSON/DDL_T_Roof_Banister.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'line-3d',
+              symbolLayers: [
+                {
+                  type: 'line',
+                  size: 1,
+                  material: {
+                    color: '#0000FF',
+                  },
                 },
-            });
+              ],
+            },
+          },
+        });
 
-            //Side Rooms in O shape
-            const DDL_0_Roof_SideRooms = new GeoJSONLayer({
-                url: "./GeoJSON/DDL_O_Roof_SideRooms.geojson",
-                renderer: {
-                    type: "simple",
-                    symbol: {
-                        type: "polygon-3d",
-                        symbolLayers: [
-                            {
-                                type: "extrude",
-                                size: 3,
-                                material: {
-                                    color: "#0000ff",
-                                },
-                            },
-                        ],
-                    },
+        //Side Rooms in O shape
+        const DDL_0_Roof_SideRooms = new GeoJSONLayer({
+          url: './GeoJSON/DDL_O_Roof_SideRooms.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 3,
+                  material: {
+                    color: '#0000ff',
+                  },
                 },
-            });
+              ],
+            },
+          },
+        });
 
-            //Side Rooms in O shape Roof
-            const DDL_0_Roof_SideRooms_Roof = new GeoJSONLayer({
-                url: "./GeoJSON/DDL_O_Roof_SideRooms_Roof.geojson",
-                renderer: {
-                    type: "simple",
-                    symbol: {
-                        type: "polygon-3d",
-                        symbolLayers: [
-                            {
-                                type: "extrude",
-                                size: 0.3,
-                                material: {
-                                    color: "#F00000",
-                                },
-                            },
-                        ],
-                    },
+        //Side Rooms in O shape Roof
+        const DDL_0_Roof_SideRooms_Roof = new GeoJSONLayer({
+          url: './GeoJSON/DDL_O_Roof_SideRooms_Roof.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.3,
+                  material: {
+                    color: '#F00000',
+                  },
                 },
-            });
+              ],
+            },
+          },
+        });
 
-            //Flag
-            const DDL_T_Roof_Flag = new GeoJSONLayer({
-                url: "./GeoJSON/DDL_T_Roof_Flag.geojson",
-                renderer: {
-                    type: "simple",
-                    symbol: {
-                        type: "point-3d",
-                        symbolLayers: [
-                            {
-                                type: "object",
-                                width: 0.5,
-                                height: 20,
-                                resource: {
-                                    primitive: "cone"
-                                },
-                                material: {
-                                    color: "#FF0000"
-                                },
-                            },
-                            {
-                                type: "object",
-                                width: 5,
-                                height: 2,
-                                depth: 0.1,
-                                resource: {
-                                    primitive: "cylinder"
-                                },
-                                material: {
-                                    color: "#FF0000"
-                                },
-                                anchor: "relative",
-                                anchorPosition: { x: 0.5, y: 0, z: -9 },
-                            },
-                        ],
-                    },
+        //Flag
+        const DDL_T_Roof_Flag = new GeoJSONLayer({
+          url: './GeoJSON/DDL_T_Roof_Flag.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'point-3d',
+              symbolLayers: [
+                {
+                  type: 'object',
+                  width: 0.5,
+                  height: 20,
+                  resource: {
+                    primitive: 'cone',
+                  },
+                  material: {
+                    color: '#FF0000',
+                  },
                 },
-            });
+                {
+                  type: 'object',
+                  width: 5,
+                  height: 2,
+                  depth: 0.1,
+                  resource: {
+                    primitive: 'cylinder',
+                  },
+                  material: {
+                    color: '#FF0000',
+                  },
+                  anchor: 'relative',
+                  anchorPosition: { x: 0.5, y: 0, z: -9 },
+                },
+              ],
+            },
+          },
+        });
 
-            const stair1_truoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_truoc/stair1_truoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.1,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+        const stair1_truoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_truoc/stair1_truoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.1,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair2_truoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_truoc/stair2_truoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.2,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair2_truoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_truoc/stair2_truoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.2,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair3_truoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_truoc/stair3_truoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.3,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair3_truoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_truoc/stair3_truoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.3,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair4_truoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_truoc/stair4_truoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.4,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair4_truoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_truoc/stair4_truoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.4,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair5_truoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_truoc/stair5_truoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.5,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair5_truoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_truoc/stair5_truoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.5,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair6_truoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_truoc/stair6_truoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.6,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair6_truoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_truoc/stair6_truoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.6,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair7_truoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_truoc/stair7_truoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.7,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair7_truoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_truoc/stair7_truoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.7,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair8_truoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_truoc/stair8_truoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.8,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair8_truoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_truoc/stair8_truoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.8,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair9_truoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_truoc/stair9_truoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.9,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair9_truoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_truoc/stair9_truoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.9,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair10_truoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_truoc/stair10_truoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 1,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair10_truoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_truoc/stair10_truoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 1,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
+              ],
+            },
+          },
+        });
 
-            const stair1_phaitruoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_phaitruoc/stair1_phaitruoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.1,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+        const stair1_phaitruoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_phaitruoc/stair1_phaitruoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.1,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair2_phaitruoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_phaitruoc/stair2_phaitruoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.2,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair2_phaitruoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_phaitruoc/stair2_phaitruoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.2,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair3_phaitruoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_phaitruoc/stair3_phaitruoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.3,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair3_phaitruoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_phaitruoc/stair3_phaitruoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.3,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair4_phaitruoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_phaitruoc/stair4_phaitruoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.4,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair4_phaitruoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_phaitruoc/stair4_phaitruoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.4,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair5_phaitruoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_phaitruoc/stair5_phaitruoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.5,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair5_phaitruoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_phaitruoc/stair5_phaitruoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.5,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair6_phaitruoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_phaitruoc/stair6_phaitruoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.6,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair6_phaitruoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_phaitruoc/stair6_phaitruoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.6,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair7_phaitruoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_phaitruoc/stair7_phaitruoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.7,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair7_phaitruoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_phaitruoc/stair7_phaitruoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.7,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair8_phaitruoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_phaitruoc/stair8_phaitruoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.8,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair8_phaitruoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_phaitruoc/stair8_phaitruoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.8,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair9_phaitruoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_phaitruoc/stair9_phaitruoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.9,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair9_phaitruoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_phaitruoc/stair9_phaitruoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.9,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair10_phaitruoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_phaitruoc/stair10_phaitruoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 1,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair10_phaitruoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_phaitruoc/stair10_phaitruoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 1,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
+              ],
+            },
+          },
+        });
 
-            const stair1_traitruoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_traitruoc/stair1_traitruoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.1,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+        const stair1_traitruoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_traitruoc/stair1_traitruoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.1,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair2_traitruoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_traitruoc/stair2_traitruoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.2,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair2_traitruoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_traitruoc/stair2_traitruoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.2,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair3_traitruoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_traitruoc/stair3_traitruoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.3,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair3_traitruoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_traitruoc/stair3_traitruoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.3,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair4_traitruoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_traitruoc/stair4_traitruoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.4,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair4_traitruoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_traitruoc/stair4_traitruoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.4,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair5_traitruoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_traitruoc/stair5_traitruoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.5,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair5_traitruoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_traitruoc/stair5_traitruoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.5,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair6_traitruoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_traitruoc/stair6_traitruoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.6,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair6_traitruoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_traitruoc/stair6_traitruoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.6,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair7_traitruoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_traitruoc/stair7_traitruoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.7,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair7_traitruoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_traitruoc/stair7_traitruoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.7,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair8_traitruoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_traitruoc/stair8_traitruoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.8,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair8_traitruoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_traitruoc/stair8_traitruoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.8,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair9_traitruoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_traitruoc/stair9_traitruoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.9,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair9_traitruoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_traitruoc/stair9_traitruoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.9,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair10_traitruoc = new GeoJSONLayer({
-                url: './GeoJSON/stair_traitruoc/stair10_traitruoc.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 1,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair10_traitruoc = new GeoJSONLayer({
+          url: './GeoJSON/stair_traitruoc/stair10_traitruoc.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 1,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
+              ],
+            },
+          },
+        });
 
-            const stair1_phaisau = new GeoJSONLayer({
-                url: './GeoJSON/stair_phaisau/stair1_phaisau.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.1,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+        const stair1_phaisau = new GeoJSONLayer({
+          url: './GeoJSON/stair_phaisau/stair1_phaisau.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.1,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair2_phaisau = new GeoJSONLayer({
-                url: './GeoJSON/stair_phaisau/stair2_phaisau.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.2,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair2_phaisau = new GeoJSONLayer({
+          url: './GeoJSON/stair_phaisau/stair2_phaisau.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.2,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair3_phaisau = new GeoJSONLayer({
-                url: './GeoJSON/stair_phaisau/stair3_phaisau.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.3,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair3_phaisau = new GeoJSONLayer({
+          url: './GeoJSON/stair_phaisau/stair3_phaisau.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.3,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair4_phaisau = new GeoJSONLayer({
-                url: './GeoJSON/stair_phaisau/stair4_phaisau.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.4,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair4_phaisau = new GeoJSONLayer({
+          url: './GeoJSON/stair_phaisau/stair4_phaisau.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.4,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair5_phaisau = new GeoJSONLayer({
-                url: './GeoJSON/stair_phaisau/stair5_phaisau.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.5,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair5_phaisau = new GeoJSONLayer({
+          url: './GeoJSON/stair_phaisau/stair5_phaisau.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.5,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair6_phaisau = new GeoJSONLayer({
-                url: './GeoJSON/stair_phaisau/stair6_phaisau.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.6,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair6_phaisau = new GeoJSONLayer({
+          url: './GeoJSON/stair_phaisau/stair6_phaisau.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.6,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair7_phaisau = new GeoJSONLayer({
-                url: './GeoJSON/stair_phaisau/stair7_phaisau.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.7,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair7_phaisau = new GeoJSONLayer({
+          url: './GeoJSON/stair_phaisau/stair7_phaisau.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.7,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair8_phaisau = new GeoJSONLayer({
-                url: './GeoJSON/stair_phaisau/stair8_phaisau.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.8,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair8_phaisau = new GeoJSONLayer({
+          url: './GeoJSON/stair_phaisau/stair8_phaisau.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.8,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair9_phaisau = new GeoJSONLayer({
-                url: './GeoJSON/stair_phaisau/stair9_phaisau.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.9,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair9_phaisau = new GeoJSONLayer({
+          url: './GeoJSON/stair_phaisau/stair9_phaisau.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.9,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair10_phaisau = new GeoJSONLayer({
-                url: './GeoJSON/stair_phaisau/stair10_phaisau.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 1,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair10_phaisau = new GeoJSONLayer({
+          url: './GeoJSON/stair_phaisau/stair10_phaisau.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 1,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
+              ],
+            },
+          },
+        });
 
-            const stair1_traisau = new GeoJSONLayer({
-                url: './GeoJSON/stair_traisau/stair1_traisau.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.1,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+        const stair1_traisau = new GeoJSONLayer({
+          url: './GeoJSON/stair_traisau/stair1_traisau.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.1,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair2_traisau = new GeoJSONLayer({
-                url: './GeoJSON/stair_traisau/stair2_traisau.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.2,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair2_traisau = new GeoJSONLayer({
+          url: './GeoJSON/stair_traisau/stair2_traisau.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.2,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair3_traisau = new GeoJSONLayer({
-                url: './GeoJSON/stair_traisau/stair3_traisau.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.3,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair3_traisau = new GeoJSONLayer({
+          url: './GeoJSON/stair_traisau/stair3_traisau.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.3,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair4_traisau = new GeoJSONLayer({
-                url: './GeoJSON/stair_traisau/stair4_traisau.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.4,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair4_traisau = new GeoJSONLayer({
+          url: './GeoJSON/stair_traisau/stair4_traisau.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.4,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair5_traisau = new GeoJSONLayer({
-                url: './GeoJSON/stair_traisau/stair5_traisau.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.5,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair5_traisau = new GeoJSONLayer({
+          url: './GeoJSON/stair_traisau/stair5_traisau.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.5,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair6_traisau = new GeoJSONLayer({
-                url: './GeoJSON/stair_traisau/stair6_traisau.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.6,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair6_traisau = new GeoJSONLayer({
+          url: './GeoJSON/stair_traisau/stair6_traisau.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.6,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair7_traisau = new GeoJSONLayer({
-                url: './GeoJSON/stair_traisau/stair7_traisau.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.7,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair7_traisau = new GeoJSONLayer({
+          url: './GeoJSON/stair_traisau/stair7_traisau.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.7,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair8_traisau = new GeoJSONLayer({
-                url: './GeoJSON/stair_traisau/stair8_traisau.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.8,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair8_traisau = new GeoJSONLayer({
+          url: './GeoJSON/stair_traisau/stair8_traisau.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.8,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair9_traisau = new GeoJSONLayer({
-                url: './GeoJSON/stair_traisau/stair9_traisau.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 0.9,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair9_traisau = new GeoJSONLayer({
+          url: './GeoJSON/stair_traisau/stair9_traisau.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 0.9,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
-            const stair10_traisau = new GeoJSONLayer({
-                url: './GeoJSON/stair_traisau/stair10_traisau.geojson',
-                renderer: {
-                    type: 'simple',
-                    symbol: {
-                        type: 'polygon-3d',
-                        symbolLayers: [
-                            {
-                                type: 'extrude',
-                                size: 1,
-                                material: {
-                                    color: '#C2C59C',
-                                },
-                                edges: {
-                                    type: 'solid', // autocasts as new SolidEdges3D()
-                                    color: 'transparent',
-                                },
-                            },
-                        ],
-                    },
+              ],
+            },
+          },
+        });
+        const stair10_traisau = new GeoJSONLayer({
+          url: './GeoJSON/stair_traisau/stair10_traisau.geojson',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'polygon-3d',
+              symbolLayers: [
+                {
+                  type: 'extrude',
+                  size: 1,
+                  material: {
+                    color: '#C2C59C',
+                  },
+                  edges: {
+                    type: 'solid', // autocasts as new SolidEdges3D()
+                    color: 'transparent',
+                  },
                 },
-            });
+              ],
+            },
+          },
+        });
 
-            const map = new Map({
-                basemap: "topo-vector",
-                ground: "world-elevation",
-                layers: [
-                    DDL_T_Roof_Base,
-                    DDL_T_Roof_Banister,
-                    DDL_T_Roof_MainRoom,
-                    DDL_T_Roof_SideRooms,
-                    DDL_T_Roof_SideRooms_Roofs,
-                    DDL_T_Roof_MainRoom_Roof,
-                    DDL_0_Roof_SideRooms,
-                    DDL_0_Roof_SideRooms_Roof,
-                    DDL_T_Roof_Flag, stair1_truoc,
+        const map = new Map({
+          basemap: 'topo-vector',
+          ground: 'world-elevation',
+          layers: [
+            DDL_T_Roof_Base,
+            DDL_T_Roof_Banister,
+            DDL_T_Roof_MainRoom,
+            DDL_T_Roof_SideRooms,
+            DDL_T_Roof_SideRooms_Roofs,
+            DDL_T_Roof_MainRoom_Roof,
+            DDL_0_Roof_SideRooms,
+            DDL_0_Roof_SideRooms_Roof,
+            DDL_T_Roof_Flag,
+            stair1_truoc,
 
-                    stair2_truoc,
-                    stair3_truoc,
-                    stair4_truoc,
-                    stair5_truoc,
-                    stair6_truoc,
-                    stair7_truoc,
-                    stair8_truoc,
-                    stair9_truoc,
-                    stair10_truoc,
+            stair2_truoc,
+            stair3_truoc,
+            stair4_truoc,
+            stair5_truoc,
+            stair6_truoc,
+            stair7_truoc,
+            stair8_truoc,
+            stair9_truoc,
+            stair10_truoc,
 
-                    stair1_phaitruoc,
-                    stair2_phaitruoc,
-                    stair3_phaitruoc,
-                    stair4_phaitruoc,
-                    stair5_phaitruoc,
-                    stair6_phaitruoc,
-                    stair7_phaitruoc,
-                    stair8_phaitruoc,
-                    stair9_phaitruoc,
-                    stair10_phaitruoc,
+            stair1_phaitruoc,
+            stair2_phaitruoc,
+            stair3_phaitruoc,
+            stair4_phaitruoc,
+            stair5_phaitruoc,
+            stair6_phaitruoc,
+            stair7_phaitruoc,
+            stair8_phaitruoc,
+            stair9_phaitruoc,
+            stair10_phaitruoc,
 
-                    stair1_traitruoc,
-                    stair2_traitruoc,
-                    stair3_traitruoc,
-                    stair4_traitruoc,
-                    stair5_traitruoc,
-                    stair6_traitruoc,
-                    stair7_traitruoc,
-                    stair8_traitruoc,
-                    stair9_traitruoc,
-                    stair10_traitruoc,
+            stair1_traitruoc,
+            stair2_traitruoc,
+            stair3_traitruoc,
+            stair4_traitruoc,
+            stair5_traitruoc,
+            stair6_traitruoc,
+            stair7_traitruoc,
+            stair8_traitruoc,
+            stair9_traitruoc,
+            stair10_traitruoc,
 
-                    stair1_phaisau,
-                    stair2_phaisau,
-                    stair3_phaisau,
-                    stair4_phaisau,
-                    stair5_phaisau,
-                    stair6_phaisau,
-                    stair7_phaisau,
-                    stair8_phaisau,
-                    stair9_phaisau,
-                    stair10_phaisau,
+            stair1_phaisau,
+            stair2_phaisau,
+            stair3_phaisau,
+            stair4_phaisau,
+            stair5_phaisau,
+            stair6_phaisau,
+            stair7_phaisau,
+            stair8_phaisau,
+            stair9_phaisau,
+            stair10_phaisau,
 
-                    stair1_traisau,
-                    stair2_traisau,
-                    stair3_traisau,
-                    stair4_traisau,
-                    stair5_traisau,
-                    stair6_traisau,
-                    stair7_traisau,
-                    stair8_traisau,
-                    stair9_traisau,
-                    stair10_traisau
-                ],
-            });
+            stair1_traisau,
+            stair2_traisau,
+            stair3_traisau,
+            stair4_traisau,
+            stair5_traisau,
+            stair6_traisau,
+            stair7_traisau,
+            stair8_traisau,
+            stair9_traisau,
+            stair10_traisau,
+          ],
+        });
 
-            const view = new SceneView({
-                container: "viewDiv",
-                map: map,
-                camera: {
-                    position: [106.696851, 10.783157, 400],
-                    heading: 910,
-                    tilt: 60,
-                },
-                zoom: 100,
-            });
+        const view = new SceneView({
+          container: 'viewDiv',
+          map: map,
+          camera: {
+            position: [106.696851, 10.783157, 400],
+            heading: 910,
+            tilt: 60,
+          },
+          zoom: 100,
+        });
 
-            const DLL_location = new Point({ x: 106.69546012873347, y: 10.777092119827023, z: 15 });
+        const DLL_location = new Point({ x: 106.69546012873347, y: 10.777092119827023, z: 15 });
 
-            function movePoint(pt, distance, angle) {
-                //rayon of the earth
-                const R = 6371e3;
-                // latitude in rad
-                let lat1 = pt.latitude * Math.PI / 180;
-                // longitude in rad
-                let long1 = pt.longitude * Math.PI / 180;
-                // the angle between the 2 points in rad
-                angle = (90 - angle) * Math.PI / 180;
-                const sigma = distance / R;
-                const delLat = sigma * Math.cos(angle);
-                //latitude of the destination point
-                let lat2 = (lat1 + delLat) * 180 / Math.PI;
-                const del = Math.log(Math.tan(lat2 / 2 + Math.PI / 4) / Math.tan(lat1 / 2 + Math.PI / 4));
-                const q = Math.cos(lat1)
+        function movePoint(pt, distance, angle) {
+          //rayon of the earth
+          const R = 6371e3;
+          // latitude in rad
+          let lat1 = (pt.latitude * Math.PI) / 180;
+          // longitude in rad
+          let long1 = (pt.longitude * Math.PI) / 180;
+          // the angle between the 2 points in rad
+          angle = ((90 - angle) * Math.PI) / 180;
+          const sigma = distance / R;
+          const delLat = sigma * Math.cos(angle);
+          //latitude of the destination point
+          let lat2 = ((lat1 + delLat) * 180) / Math.PI;
+          const del = Math.log(Math.tan(lat2 / 2 + Math.PI / 4) / Math.tan(lat1 / 2 + Math.PI / 4));
+          const q = Math.cos(lat1);
 
-                const delLong = sigma * Math.sin(angle) / q;
-                //longitude of the destination point
-                let long2 = (long1 + delLong) * 180 / Math.PI;
+          const delLong = (sigma * Math.sin(angle)) / q;
+          //longitude of the destination point
+          let long2 = ((long1 + delLong) * 180) / Math.PI;
 
-                return new Point({ x: long2, y: lat2, z: pt.z });
-            }
+          return new Point({ x: long2, y: lat2, z: pt.z });
+        }
 
-            function createFrontBuilding(pt) {
-                const middleTexture = new MeshTexture({
-                    url: "./texture-mat-truoc-giua.jpg"
-                });
-                const untitledTexture = new MeshTexture({
-                    url: "./texture-untitled.jpg"
-                });
+        function createFrontBuilding(pt) {
+          const middleTexture = new MeshTexture({
+            url: './texture-mat-truoc-giua.jpg',
+          });
+          const untitledTexture = new MeshTexture({
+            url: './texture-untitled.jpg',
+          });
 
-                const middle = Mesh.createBox(pt, {
-                    size: {
-                        width: a - 2 * f,
-                        height: 25,
-                        depth: c - g
-                    },
-                    material: {
-                        colorTexture: middleTexture
-                    }
-                });
+          const middle = Mesh.createBox(pt, {
+            size: {
+              width: a - 2 * f,
+              height: 25,
+              depth: c - g,
+            },
+            material: {
+              colorTexture: middleTexture,
+            },
+          });
 
-                const leftLocation = movePoint(pt, a / 2 - f / 2, -47);
-                const left = Mesh.createBox(leftLocation, {
-                    size: {
-                        width: f,
-                        height: 25,
-                        depth: c
-                    },
-                    material: {
-                        colorTexture: untitledTexture
-                    }
-                });
+          const leftLocation = movePoint(pt, a / 2 - f / 2, -47);
+          const left = Mesh.createBox(leftLocation, {
+            size: {
+              width: f,
+              height: 25,
+              depth: c,
+            },
+            material: {
+              colorTexture: untitledTexture,
+            },
+          });
 
-                const rightLocation = movePoint(pt, - a / 2 + f / 2, -39);
-                const right = Mesh.createBox(rightLocation, {
-                    size: {
-                        width: f,
-                        height: 25,
-                        depth: c
-                    },
-                    material: {
-                        colorTexture: untitledTexture
-                    }
-                });
+          const rightLocation = movePoint(pt, -a / 2 + f / 2, -39);
+          const right = Mesh.createBox(rightLocation, {
+            size: {
+              width: f,
+              height: 25,
+              depth: c,
+            },
+            material: {
+              colorTexture: untitledTexture,
+            },
+          });
 
-                middle.rotate(0, 0, -43);
-                left.rotate(0, 0, -43);
-                right.rotate(0, 0, -43);
+          middle.rotate(0, 0, -43);
+          left.rotate(0, 0, -43);
+          right.rotate(0, 0, -43);
 
-                return meshUtils.merge([middle, left, right]);
-            }
+          return meshUtils.merge([middle, left, right]);
+        }
 
-            function createMiddleBuilding(pt) {
-                const untitledTexture = new MeshTexture({
-                    url: "./texture-untitled.jpg"
-                });
+        function createMiddleBuilding(pt) {
+          const untitledTexture = new MeshTexture({
+            url: './texture-untitled.jpg',
+          });
 
-                const middleBuildingLocation = movePoint(pt, (c - g) / 2 + i / 2, -43 - 90);
-                const building = Mesh.createBox(middleBuildingLocation, {
-                    size: {
-                        width: l - 2 * j,
-                        height: 25,
-                        depth: i + o - 3
-                    },
-                    material: {
-                        colorTexture: untitledTexture
-                    }
-                });
+          const middleBuildingLocation = movePoint(pt, (c - g) / 2 + i / 2, -43 - 90);
+          const building = Mesh.createBox(middleBuildingLocation, {
+            size: {
+              width: l - 2 * j,
+              height: 25,
+              depth: i + o - 3,
+            },
+            material: {
+              colorTexture: untitledTexture,
+            },
+          });
 
-                building.rotate(0, 0, -43);
+          building.rotate(0, 0, -43);
 
-                return building;
-            }
+          return building;
+        }
 
-            function createBackBuilding(pt) {
-                const untitledTexture = new MeshTexture({
-                    url: "./texture-untitled.jpg"
-                });
+        function createBackBuilding(pt) {
+          const untitledTexture = new MeshTexture({
+            url: './texture-untitled.jpg',
+          });
 
-                const middleBuildingLocation = movePoint(pt, (c - g) / 2 + i / 2, -43 - 90);
-                const middleLocation = movePoint(middleBuildingLocation, i / 2 + k / 2, -43 - 90);
-                const leftLocation = movePoint(middleLocation, m / 2 + n / 2, -43);
-                const rightLocation = movePoint(middleLocation, - m / 2 - n / 2, -43);
-                const backLocation = movePoint(middleLocation, m / 2 + o / 2 - 5, -43 - 90);
+          const middleBuildingLocation = movePoint(pt, (c - g) / 2 + i / 2, -43 - 90);
+          const middleLocation = movePoint(middleBuildingLocation, i / 2 + k / 2, -43 - 90);
+          const leftLocation = movePoint(middleLocation, m / 2 + n / 2, -43);
+          const rightLocation = movePoint(middleLocation, -m / 2 - n / 2, -43);
+          const backLocation = movePoint(middleLocation, m / 2 + o / 2 - 5, -43 - 90);
 
-                const left = Mesh.createBox(leftLocation, {
-                    size: {
-                        width: n,
-                        height: 25,
-                        depth: k
-                    },
-                    material: {
-                        colorTexture: untitledTexture
-                    }
-                });
+          const left = Mesh.createBox(leftLocation, {
+            size: {
+              width: n,
+              height: 25,
+              depth: k,
+            },
+            material: {
+              colorTexture: untitledTexture,
+            },
+          });
 
-                const right = Mesh.createBox(rightLocation, {
-                    size: {
-                        width: n,
-                        height: 25,
-                        depth: k
-                    },
-                    material: {
-                        colorTexture: untitledTexture
-                    }
-                });
+          const right = Mesh.createBox(rightLocation, {
+            size: {
+              width: n,
+              height: 25,
+              depth: k,
+            },
+            material: {
+              colorTexture: untitledTexture,
+            },
+          });
 
-                const back = Mesh.createBox(backLocation, {
-                    size: {
-                        width: l,
-                        height: 25,
-                        depth: o
-                    },
-                    material: {
-                        colorTexture: untitledTexture
-                    }
-                });
+          const back = Mesh.createBox(backLocation, {
+            size: {
+              width: l,
+              height: 25,
+              depth: o,
+            },
+            material: {
+              colorTexture: untitledTexture,
+            },
+          });
 
-                left.rotate(0, 0, -43);
-                right.rotate(0, 0, -43);
-                back.rotate(0, 0, -43);
+          left.rotate(0, 0, -43);
+          right.rotate(0, 0, -43);
+          back.rotate(0, 0, -43);
 
-                return meshUtils.merge([left, right, back]);
-            }
+          return meshUtils.merge([left, right, back]);
+        }
 
-            let frontBuilding = new Graphic({
-                geometry: createFrontBuilding(DLL_location),
-                symbol: {
-                    type: "mesh-3d",
-                    symbolLayers: [{ type: "fill" }]
-                }
-            });
+        let frontBuilding = new Graphic({
+          geometry: createFrontBuilding(DLL_location),
+          symbol: {
+            type: 'mesh-3d',
+            symbolLayers: [{ type: 'fill' }],
+          },
+        });
 
-            let middleBuilding = new Graphic({
-                geometry: createMiddleBuilding(DLL_location),
-                symbol: {
-                    type: "mesh-3d",
-                    symbolLayers: [{ type: "fill" }]
-                }
-            });
+        let middleBuilding = new Graphic({
+          geometry: createMiddleBuilding(DLL_location),
+          symbol: {
+            type: 'mesh-3d',
+            symbolLayers: [{ type: 'fill' }],
+          },
+        });
 
-            let backBuilding = new Graphic({
-                geometry: createBackBuilding(DLL_location),
-                symbol: {
-                    type: "mesh-3d",
-                    symbolLayers: [{ type: "fill" }]
-                }
-            });
+        let backBuilding = new Graphic({
+          geometry: createBackBuilding(DLL_location),
+          symbol: {
+            type: 'mesh-3d',
+            symbolLayers: [{ type: 'fill' }],
+          },
+        });
 
+        view.graphics.add(frontBuilding);
+        view.graphics.add(middleBuilding);
+        view.graphics.add(backBuilding);
 
-            view.graphics.add(frontBuilding);
-            view.graphics.add(middleBuilding);
-            view.graphics.add(backBuilding);
+        //Hiển thị thông tin chi tiết của Dinh Độc Lập
+        view.popup.defaultPopupTemplateEnabled = true;
 
-            //Hiển thị thông tin chi tiết của Dinh Độc Lập
-            view.popup.defaultPopupTemplateEnabled = true;
+        fetch('./GeoJSON/Tree_corr.json')
+          .then((response) => response.json())
+          .then((json) => {
+            for (var corr in json) {
+              const tree_loc = new Point({
+                x: json[corr][0],
+                y: json[corr][1],
+                z: 15,
+              });
 
-            fetch('./GeoJSON/Tree_corr.json')
-                .then((response) => response.json())
-                .then((json) => {
-
-                    for (var corr in json) {
-                        const tree_loc = new Point({
-                            x: json[corr][0],
-                            y: json[corr][1],
-                            z: 15
-
-
-                        });
-
-
-                        Mesh.createFromGLTF(tree_loc, "./Model/Tree/Tree.glb") //Thêm tượng demo
-                            .then(function (geometry) {
-                                // increase it a factor of 3
-                                geometry.scale(5, { origin: tree_loc });
-                                // rotate it by 90 degrees around the z axis
-                                geometry.rotate(0, 0, 114);
-                                // add it to a graphic
-                                const graphic = new Graphic({
-                                    geometry,
-                                    symbol: {
-                                        type: "mesh-3d", // autocasts as new MeshSymbol3D()
-                                        symbolLayers: [{
-                                            type: "fill", // autocasts as new FillSymbol3DLayer()
-                                            material: {
-                                                //color: "gray"
-                                            },
-                                            size: 1000
-                                        }]
-                                    }
-                                });
-
-                                view.graphics.add(graphic)
-                            })
-                            .catch(console.error);
-                    }
-                })
-
-
-            const fountain_loc = new Point({
-                x: 106.69596145527656,
-                y: 10.777612314732947,
-                z: 16
-            });
-
-            Mesh.createFromGLTF(fountain_loc, "./Model/Fountain/Fountain.gltf") //Thêm tượng demo
+              Mesh.createFromGLTF(tree_loc, './Model/Tree/Tree.glb') //Thêm tượng demo
                 .then(function (geometry) {
-                    // increase it a factor of 3
-                    geometry.scale(0.5, { origin: fountain_loc });
-                    // rotate it by 90 degrees around the z axis
-                    geometry.rotate(0, 0, 114);
-                    // add it to a graphic
-                    const graphic = new Graphic({
-                        geometry,
-                        symbol: {
-                            type: "mesh-3d", // autocasts as new MeshSymbol3D()
-                            symbolLayers: [{
-                                type: "fill", // autocasts as new FillSymbol3DLayer()
-                                material: {
-                                    //color: "gray"
-                                },
-                                size: 1000
-                            }]
-                        }
-                    });
+                  // increase it a factor of 3
+                  geometry.scale(5, { origin: tree_loc });
+                  // rotate it by 90 degrees around the z axis
+                  geometry.rotate(0, 0, 114);
+                  // add it to a graphic
+                  const graphic = new Graphic({
+                    geometry,
+                    symbol: {
+                      type: 'mesh-3d', // autocasts as new MeshSymbol3D()
+                      symbolLayers: [
+                        {
+                          type: 'fill', // autocasts as new FillSymbol3DLayer()
+                          material: {
+                            //color: "gray"
+                          },
+                          size: 1000,
+                        },
+                      ],
+                    },
+                  });
 
-                    view.graphics.add(graphic)
+                  view.graphics.add(graphic);
                 })
                 .catch(console.error);
+            }
+          });
 
-            //Click copy các tọa độ
-            // view.popup.autoOpenEnabled = false; // Disable the default popup behavior
-            view.on("click", function (event) {
-                // Listen for the click event
-                view.hitTest(event).then(function (hitTestResults) {
-                    // Search for features where the user clicked
-                    if (hitTestResults.results) {
-                        list_points.push([
-                            event.mapPoint.longitude,
-                            event.mapPoint.latitude,
-                        ]);
-                        string_points +=
-                            "[" +
-                            event.mapPoint.longitude +
-                            ", " +
-                            event.mapPoint.latitude +
-                            "],";
-                        copyTextToClipboard(string_points);
-                        // console.log(list_points);
-                    }
-                });
-            });
+        const fountain_loc = new Point({
+          x: 106.69596145527656,
+          y: 10.777612314732947,
+          z: 16,
         });
+
+        Mesh.createFromGLTF(fountain_loc, './Model/Fountain/Fountain.gltf') //Thêm tượng demo
+          .then(function (geometry) {
+            // increase it a factor of 3
+            geometry.scale(0.5, { origin: fountain_loc });
+            // rotate it by 90 degrees around the z axis
+            geometry.rotate(0, 0, 114);
+            // add it to a graphic
+            const graphic = new Graphic({
+              geometry,
+              symbol: {
+                type: 'mesh-3d', // autocasts as new MeshSymbol3D()
+                symbolLayers: [
+                  {
+                    type: 'fill', // autocasts as new FillSymbol3DLayer()
+                    material: {
+                      //color: "gray"
+                    },
+                    size: 1000,
+                  },
+                ],
+              },
+            });
+
+            view.graphics.add(graphic);
+          })
+          .catch(console.error);
+
+        //Click copy các tọa độ
+        // view.popup.autoOpenEnabled = false; // Disable the default popup behavior
+        view.on('click', function (event) {
+          // Listen for the click event
+          view.hitTest(event).then(function (hitTestResults) {
+            // Search for features where the user clicked
+            if (hitTestResults.results) {
+              list_points.push([event.mapPoint.longitude, event.mapPoint.latitude]);
+              string_points += '[' + event.mapPoint.longitude + ', ' + event.mapPoint.latitude + '],';
+              copyTextToClipboard(string_points);
+              //   console.log(list_points);
+            }
+          });
+        });
+      });
     </script>
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="viewDiv"></div>
-</body>
-
+  </body>
 </html>
