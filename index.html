@@ -68,6 +68,11 @@
             "esri/request",
             "esri/geometry/Point",
             "esri/geometry/Mesh",
+            "esri/geometry/support/MeshTexture",
+            "esri/geometry/SpatialReference",
+            "esri/rest/geometryService",
+            "esri/rest/support/DistanceParameters",
+            "esri/geometry/support/meshUtils"
         ], function (
             Map,
             SceneView,
@@ -77,47 +82,28 @@
             Graphic,
             esriRequest,
             Point,
-            Mesh
+            Mesh,
+            MeshTexture,
+            SpatialReference,
+            geometryService,
+            DistanceParameters,
+            meshUtils
         ) {
-            // Hiển thị mô hình chữ T của Dinh Độc Lập
-            const DDL_T = new GeoJSONLayer({
-                url: "./GeoJSON/DDL_T.geojson",
-                renderer: {
-                    type: "simple",
-                    symbol: {
-                        type: "polygon-3d",
-                        symbolLayers: [
-                            {
-                                type: "extrude",
-                                size: 30,
-                                material: {
-                                    color: "#caf0f8",
-                                },
-                            },
-                        ],
-                    },
-                },
-            });
-
-            // Hiển thị mô hình chữ O của Dinh Độc Lập
-            const DDL_O = new GeoJSONLayer({
-                url: "./GeoJSON/DDL_O.geojson",
-                renderer: {
-                    type: "simple",
-                    symbol: {
-                        type: "polygon-3d",
-                        symbolLayers: [
-                            {
-                                type: "extrude",
-                                size: 30,
-                                material: {
-                                    color: "#caf0f8",
-                                },
-                            },
-                        ],
-                    },
-                },
-            });
+            const a = 86.19609697819396;
+            const b = 35.777078869019;
+            const c = 29.373043461846656;
+            const d = 14.893092119035835;
+            const e = 5.362867866395603;
+            const f = 13.196519450343406;
+            const g = 4.669535492104023;
+            const h = 19.326979335433652;
+            const i = 21.470659471369636;
+            const j = 4.662351792212651;
+            const k = 31.106531103747145;
+            const l = 32.64048964664293;
+            const m = 10.77580050922984;
+            const n = 10.94537832397216;
+            const o = 15.35567862550349;
 
             //Base roof
             const DDL_T_Roof_Base = new GeoJSONLayer({
@@ -1425,8 +1411,7 @@
             const map = new Map({
                 basemap: "topo-vector",
                 ground: "world-elevation",
-                layers: [DDL_T, DDL_O,
-
+                layers: [
                     DDL_T_Roof_Base,
                     DDL_T_Roof_Banister,
                     DDL_T_Roof_MainRoom,
@@ -1503,6 +1488,183 @@
                 },
                 zoom: 100,
             });
+
+            const DLL_location = new Point({ x: 106.69546012873347, y: 10.777092119827023, z: 15 });
+
+            function movePoint(pt, distance, angle) {
+                //rayon of the earth
+                const R = 6371e3;
+                // latitude in rad
+                let lat1 = pt.latitude * Math.PI / 180;
+                // longitude in rad
+                let long1 = pt.longitude * Math.PI / 180;
+                // the angle between the 2 points in rad
+                angle = (90 - angle) * Math.PI / 180;
+                const sigma = distance / R;
+                const delLat = sigma * Math.cos(angle);
+                //latitude of the destination point
+                let lat2 = (lat1 + delLat) * 180 / Math.PI;
+                const del = Math.log(Math.tan(lat2 / 2 + Math.PI / 4) / Math.tan(lat1 / 2 + Math.PI / 4));
+                const q = Math.cos(lat1)
+
+                const delLong = sigma * Math.sin(angle) / q;
+                //longitude of the destination point
+                let long2 = (long1 + delLong) * 180 / Math.PI;
+
+                return new Point({ x: long2, y: lat2, z: pt.z });
+            }
+
+            function createFrontBuilding(pt) {
+                const middleTexture = new MeshTexture({
+                    url: "./texture-mat-truoc-giua.jpg"
+                });
+                const untitledTexture = new MeshTexture({
+                    url: "./texture-untitled.jpg"
+                });
+
+                const middle = Mesh.createBox(pt, {
+                    size: {
+                        width: a - 2 * f,
+                        height: 25,
+                        depth: c - g
+                    },
+                    material: {
+                        colorTexture: middleTexture
+                    }
+                });
+
+                const leftLocation = movePoint(pt, a / 2 - f / 2, -47);
+                const left = Mesh.createBox(leftLocation, {
+                    size: {
+                        width: f,
+                        height: 25,
+                        depth: c
+                    },
+                    material: {
+                        colorTexture: untitledTexture
+                    }
+                });
+
+                const rightLocation = movePoint(pt, - a / 2 + f / 2, -39);
+                const right = Mesh.createBox(rightLocation, {
+                    size: {
+                        width: f,
+                        height: 25,
+                        depth: c
+                    },
+                    material: {
+                        colorTexture: untitledTexture
+                    }
+                });
+
+                middle.rotate(0, 0, -43);
+                left.rotate(0, 0, -43);
+                right.rotate(0, 0, -43);
+
+                return meshUtils.merge([middle, left, right]);
+            }
+
+            function createMiddleBuilding(pt) {
+                const untitledTexture = new MeshTexture({
+                    url: "./texture-untitled.jpg"
+                });
+
+                const middleBuildingLocation = movePoint(pt, (c - g) / 2 + i / 2, -43 - 90);
+                const building = Mesh.createBox(middleBuildingLocation, {
+                    size: {
+                        width: l - 2 * j,
+                        height: 25,
+                        depth: i + o - 3
+                    },
+                    material: {
+                        colorTexture: untitledTexture
+                    }
+                });
+
+                building.rotate(0, 0, -43);
+
+                return building;
+            }
+
+            function createBackBuilding(pt) {
+                const untitledTexture = new MeshTexture({
+                    url: "./texture-untitled.jpg"
+                });
+
+                const middleBuildingLocation = movePoint(pt, (c - g) / 2 + i / 2, -43 - 90);
+                const middleLocation = movePoint(middleBuildingLocation, i / 2 + k / 2, -43 - 90);
+                const leftLocation = movePoint(middleLocation, m / 2 + n / 2, -43);
+                const rightLocation = movePoint(middleLocation, - m / 2 - n / 2, -43);
+                const backLocation = movePoint(middleLocation, m / 2 + o / 2 - 5, -43 - 90);
+
+                const left = Mesh.createBox(leftLocation, {
+                    size: {
+                        width: n,
+                        height: 25,
+                        depth: k
+                    },
+                    material: {
+                        colorTexture: untitledTexture
+                    }
+                });
+
+                const right = Mesh.createBox(rightLocation, {
+                    size: {
+                        width: n,
+                        height: 25,
+                        depth: k
+                    },
+                    material: {
+                        colorTexture: untitledTexture
+                    }
+                });
+
+                const back = Mesh.createBox(backLocation, {
+                    size: {
+                        width: l,
+                        height: 25,
+                        depth: o
+                    },
+                    material: {
+                        colorTexture: untitledTexture
+                    }
+                });
+
+                left.rotate(0, 0, -43);
+                right.rotate(0, 0, -43);
+                back.rotate(0, 0, -43);
+
+                return meshUtils.merge([left, right, back]);
+            }
+
+            let frontBuilding = new Graphic({
+                geometry: createFrontBuilding(DLL_location),
+                symbol: {
+                    type: "mesh-3d",
+                    symbolLayers: [{ type: "fill" }]
+                }
+            });
+
+            let middleBuilding = new Graphic({
+                geometry: createMiddleBuilding(DLL_location),
+                symbol: {
+                    type: "mesh-3d",
+                    symbolLayers: [{ type: "fill" }]
+                }
+            });
+
+            let backBuilding = new Graphic({
+                geometry: createBackBuilding(DLL_location),
+                symbol: {
+                    type: "mesh-3d",
+                    symbolLayers: [{ type: "fill" }]
+                }
+            });
+
+
+            view.graphics.add(frontBuilding);
+            view.graphics.add(middleBuilding);
+            view.graphics.add(backBuilding);
 
             //Hiển thị thông tin chi tiết của Dinh Độc Lập
             view.popup.defaultPopupTemplateEnabled = true;
