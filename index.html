@@ -41,7 +41,7 @@
         // Khai báo biến click copy lấy tọa độ
         var map;
         var list_points = [];
-        var string_points = "";
+        var string_points = '';
 
         // hàm click lấy copy tọa độ
         function copyTextToClipboard(text) {
@@ -51,28 +51,28 @@
             }
             navigator.clipboard.writeText(text).then(
                 function () {
-                    console.log("Async: Copying to clipboard was successful!");
+                    console.log('Async: Copying to clipboard was successful!');
                 },
                 function (err) {
-                    console.error("Async: Could not copy text: ", err);
+                    console.error('Async: Could not copy text: ', err);
                 }
             );
         }
         require([
-            "esri/Map",
-            "esri/views/SceneView",
-            "esri/layers/GeoJSONLayer",
-            "esri/layers/SceneLayer",
-            "esri/layers/GraphicsLayer",
-            "esri/Graphic",
-            "esri/request",
-            "esri/geometry/Point",
-            "esri/geometry/Mesh",
-            "esri/geometry/support/MeshTexture",
-            "esri/geometry/SpatialReference",
-            "esri/rest/geometryService",
-            "esri/rest/support/DistanceParameters",
-            "esri/geometry/support/meshUtils"
+            'esri/Map',
+            'esri/views/SceneView',
+            'esri/layers/GeoJSONLayer',
+            'esri/layers/SceneLayer',
+            'esri/layers/GraphicsLayer',
+            'esri/Graphic',
+            'esri/request',
+            'esri/geometry/Point',
+            'esri/geometry/Mesh',
+            'esri/geometry/support/MeshTexture',
+            'esri/geometry/SpatialReference',
+            'esri/rest/geometryService',
+            'esri/rest/support/DistanceParameters',
+            'esri/geometry/support/meshUtils',
         ], function (
             Map,
             SceneView,
@@ -207,18 +207,18 @@
 
             //Roof Banister
             const DDL_T_Roof_Banister = new GeoJSONLayer({
-                url: "./GeoJSON/DDL_T_Roof_Banister.geojson",
+                url: './GeoJSON/DDL_T_Roof_Banister.geojson',
                 renderer: {
-                    type: "simple",
+                    type: 'simple',
                     symbol: {
-                        type: "line-3d",
+                        type: 'line-3d',
                         symbolLayers: [
                             {
-                                type: "line",
+                                type: 'line',
                                 size: 1,
                                 material: {
-                                    color: "#0000FF",
-                                }
+                                    color: '#0000FF',
+                                },
                             },
                         ],
                     },
@@ -1409,8 +1409,8 @@
             });
 
             const map = new Map({
-                basemap: "topo-vector",
-                ground: "world-elevation",
+                basemap: 'topo-vector',
+                ground: 'world-elevation',
                 layers: [
                     DDL_T_Roof_Base,
                     DDL_T_Roof_Banister,
@@ -1420,7 +1420,8 @@
                     DDL_T_Roof_MainRoom_Roof,
                     DDL_0_Roof_SideRooms,
                     DDL_0_Roof_SideRooms_Roof,
-                    DDL_T_Roof_Flag, stair1_truoc,
+                    DDL_T_Roof_Flag,
+                    stair1_truoc,
 
                     stair2_truoc,
                     stair3_truoc,
@@ -1474,12 +1475,12 @@
                     stair7_traisau,
                     stair8_traisau,
                     stair9_traisau,
-                    stair10_traisau
+                    stair10_traisau,
                 ],
             });
 
             const view = new SceneView({
-                container: "viewDiv",
+                container: 'viewDiv',
                 map: map,
                 camera: {
                     position: [106.696851, 10.783157, 400],
@@ -1495,42 +1496,42 @@
                 //rayon of the earth
                 const R = 6371e3;
                 // latitude in rad
-                let lat1 = pt.latitude * Math.PI / 180;
+                let lat1 = (pt.latitude * Math.PI) / 180;
                 // longitude in rad
-                let long1 = pt.longitude * Math.PI / 180;
+                let long1 = (pt.longitude * Math.PI) / 180;
                 // the angle between the 2 points in rad
-                angle = (90 - angle) * Math.PI / 180;
+                angle = ((90 - angle) * Math.PI) / 180;
                 const sigma = distance / R;
                 const delLat = sigma * Math.cos(angle);
                 //latitude of the destination point
-                let lat2 = (lat1 + delLat) * 180 / Math.PI;
+                let lat2 = ((lat1 + delLat) * 180) / Math.PI;
                 const del = Math.log(Math.tan(lat2 / 2 + Math.PI / 4) / Math.tan(lat1 / 2 + Math.PI / 4));
-                const q = Math.cos(lat1)
+                const q = Math.cos(lat1);
 
-                const delLong = sigma * Math.sin(angle) / q;
+                const delLong = (sigma * Math.sin(angle)) / q;
                 //longitude of the destination point
-                let long2 = (long1 + delLong) * 180 / Math.PI;
+                let long2 = ((long1 + delLong) * 180) / Math.PI;
 
                 return new Point({ x: long2, y: lat2, z: pt.z });
             }
 
             function createFrontBuilding(pt) {
                 const middleTexture = new MeshTexture({
-                    url: "./texture-mat-truoc-giua.jpg"
+                    url: './texture-mat-truoc-giua.jpg',
                 });
                 const untitledTexture = new MeshTexture({
-                    url: "./texture-untitled.jpg"
+                    url: './texture-untitled.jpg',
                 });
 
                 const middle = Mesh.createBox(pt, {
                     size: {
                         width: a - 2 * f,
                         height: 25,
-                        depth: c - g
+                        depth: c - g,
                     },
                     material: {
-                        colorTexture: middleTexture
-                    }
+                        colorTexture: middleTexture,
+                    },
                 });
 
                 const leftLocation = movePoint(pt, a / 2 - f / 2, -47);
@@ -1538,23 +1539,23 @@
                     size: {
                         width: f,
                         height: 25,
-                        depth: c
+                        depth: c,
                     },
                     material: {
-                        colorTexture: untitledTexture
-                    }
+                        colorTexture: untitledTexture,
+                    },
                 });
 
-                const rightLocation = movePoint(pt, - a / 2 + f / 2, -39);
+                const rightLocation = movePoint(pt, -a / 2 + f / 2, -39);
                 const right = Mesh.createBox(rightLocation, {
                     size: {
                         width: f,
                         height: 25,
-                        depth: c
+                        depth: c,
                     },
                     material: {
-                        colorTexture: untitledTexture
-                    }
+                        colorTexture: untitledTexture,
+                    },
                 });
 
                 middle.rotate(0, 0, -43);
@@ -1566,7 +1567,7 @@
 
             function createMiddleBuilding(pt) {
                 const untitledTexture = new MeshTexture({
-                    url: "./texture-untitled.jpg"
+                    url: './texture-untitled.jpg',
                 });
 
                 const middleBuildingLocation = movePoint(pt, (c - g) / 2 + i / 2, -43 - 90);
@@ -1574,11 +1575,11 @@
                     size: {
                         width: l - 2 * j,
                         height: 25,
-                        depth: i + o - 3
+                        depth: i + o - 3,
                     },
                     material: {
-                        colorTexture: untitledTexture
-                    }
+                        colorTexture: untitledTexture,
+                    },
                 });
 
                 building.rotate(0, 0, -43);
@@ -1588,46 +1589,46 @@
 
             function createBackBuilding(pt) {
                 const untitledTexture = new MeshTexture({
-                    url: "./texture-untitled.jpg"
+                    url: './texture-untitled.jpg',
                 });
 
                 const middleBuildingLocation = movePoint(pt, (c - g) / 2 + i / 2, -43 - 90);
                 const middleLocation = movePoint(middleBuildingLocation, i / 2 + k / 2, -43 - 90);
                 const leftLocation = movePoint(middleLocation, m / 2 + n / 2, -43);
-                const rightLocation = movePoint(middleLocation, - m / 2 - n / 2, -43);
+                const rightLocation = movePoint(middleLocation, -m / 2 - n / 2, -43);
                 const backLocation = movePoint(middleLocation, m / 2 + o / 2 - 5, -43 - 90);
 
                 const left = Mesh.createBox(leftLocation, {
                     size: {
                         width: n,
                         height: 25,
-                        depth: k
+                        depth: k,
                     },
                     material: {
-                        colorTexture: untitledTexture
-                    }
+                        colorTexture: untitledTexture,
+                    },
                 });
 
                 const right = Mesh.createBox(rightLocation, {
                     size: {
                         width: n,
                         height: 25,
-                        depth: k
+                        depth: k,
                     },
                     material: {
-                        colorTexture: untitledTexture
-                    }
+                        colorTexture: untitledTexture,
+                    },
                 });
 
                 const back = Mesh.createBox(backLocation, {
                     size: {
                         width: l,
                         height: 25,
-                        depth: o
+                        depth: o,
                     },
                     material: {
-                        colorTexture: untitledTexture
-                    }
+                        colorTexture: untitledTexture,
+                    },
                 });
 
                 left.rotate(0, 0, -43);
@@ -1640,27 +1641,26 @@
             let frontBuilding = new Graphic({
                 geometry: createFrontBuilding(DLL_location),
                 symbol: {
-                    type: "mesh-3d",
-                    symbolLayers: [{ type: "fill" }]
-                }
+                    type: 'mesh-3d',
+                    symbolLayers: [{ type: 'fill' }],
+                },
             });
 
             let middleBuilding = new Graphic({
                 geometry: createMiddleBuilding(DLL_location),
                 symbol: {
-                    type: "mesh-3d",
-                    symbolLayers: [{ type: "fill" }]
-                }
+                    type: 'mesh-3d',
+                    symbolLayers: [{ type: 'fill' }],
+                },
             });
 
             let backBuilding = new Graphic({
                 geometry: createBackBuilding(DLL_location),
                 symbol: {
-                    type: "mesh-3d",
-                    symbolLayers: [{ type: "fill" }]
-                }
+                    type: 'mesh-3d',
+                    symbolLayers: [{ type: 'fill' }],
+                },
             });
-
 
             view.graphics.add(frontBuilding);
             view.graphics.add(middleBuilding);
@@ -1672,18 +1672,14 @@
             fetch('./GeoJSON/Tree_corr.json')
                 .then((response) => response.json())
                 .then((json) => {
-
                     for (var corr in json) {
                         const tree_loc = new Point({
                             x: json[corr][0],
                             y: json[corr][1],
-                            z: 15
-
-
+                            z: 15,
                         });
 
-
-                        Mesh.createFromGLTF(tree_loc, "./Model/Tree/Tree.glb") //Thêm tượng demo
+                        Mesh.createFromGLTF(tree_loc, './Model/Tree/Tree.glb') //Thêm tượng demo
                             .then(function (geometry) {
                                 // increase it a factor of 3
                                 geometry.scale(5, { origin: tree_loc });
@@ -1693,31 +1689,32 @@
                                 const graphic = new Graphic({
                                     geometry,
                                     symbol: {
-                                        type: "mesh-3d", // autocasts as new MeshSymbol3D()
-                                        symbolLayers: [{
-                                            type: "fill", // autocasts as new FillSymbol3DLayer()
-                                            material: {
-                                                //color: "gray"
+                                        type: 'mesh-3d', // autocasts as new MeshSymbol3D()
+                                        symbolLayers: [
+                                            {
+                                                type: 'fill', // autocasts as new FillSymbol3DLayer()
+                                                material: {
+                                                    //color: "gray"
+                                                },
+                                                size: 1000,
                                             },
-                                            size: 1000
-                                        }]
-                                    }
+                                        ],
+                                    },
                                 });
 
-                                view.graphics.add(graphic)
+                                view.graphics.add(graphic);
                             })
                             .catch(console.error);
                     }
-                })
-
+                });
 
             const fountain_loc = new Point({
                 x: 106.69596145527656,
                 y: 10.777612314732947,
-                z: 16
+                z: 16,
             });
 
-            Mesh.createFromGLTF(fountain_loc, "./Model/Fountain/Fountain.gltf") //Thêm tượng demo
+            Mesh.createFromGLTF(fountain_loc, './Model/Fountain/Fountain.gltf') //Thêm tượng demo
                 .then(function (geometry) {
                     // increase it a factor of 3
                     geometry.scale(0.5, { origin: fountain_loc });
@@ -1727,40 +1724,34 @@
                     const graphic = new Graphic({
                         geometry,
                         symbol: {
-                            type: "mesh-3d", // autocasts as new MeshSymbol3D()
-                            symbolLayers: [{
-                                type: "fill", // autocasts as new FillSymbol3DLayer()
-                                material: {
-                                    //color: "gray"
+                            type: 'mesh-3d', // autocasts as new MeshSymbol3D()
+                            symbolLayers: [
+                                {
+                                    type: 'fill', // autocasts as new FillSymbol3DLayer()
+                                    material: {
+                                        //color: "gray"
+                                    },
+                                    size: 1000,
                                 },
-                                size: 1000
-                            }]
-                        }
+                            ],
+                        },
                     });
 
-                    view.graphics.add(graphic)
+                    view.graphics.add(graphic);
                 })
                 .catch(console.error);
 
             //Click copy các tọa độ
             // view.popup.autoOpenEnabled = false; // Disable the default popup behavior
-            view.on("click", function (event) {
+            view.on('click', function (event) {
                 // Listen for the click event
                 view.hitTest(event).then(function (hitTestResults) {
                     // Search for features where the user clicked
                     if (hitTestResults.results) {
-                        list_points.push([
-                            event.mapPoint.longitude,
-                            event.mapPoint.latitude,
-                        ]);
-                        string_points +=
-                            "[" +
-                            event.mapPoint.longitude +
-                            ", " +
-                            event.mapPoint.latitude +
-                            "],";
+                        list_points.push([event.mapPoint.longitude, event.mapPoint.latitude]);
+                        string_points += '[' + event.mapPoint.longitude + ', ' + event.mapPoint.latitude + '],';
                         copyTextToClipboard(string_points);
-                        // console.log(list_points);
+                        //   console.log(list_points);
                     }
                 });
             });
